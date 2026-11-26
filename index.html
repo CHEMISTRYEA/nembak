@@ -1,12 +1,9 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>HYRULE RUNNER: 16-BIT QUEST</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Yuji+Syuku&display=swap" rel="stylesheet">
+  <title>CYBER-RUNNER: OVERDRIVE</title>
   <style>
     * {
       box-sizing: border-box;
@@ -19,16 +16,14 @@
       width: 100%;
       height: 100%;
       overflow: hidden;
-      background: #1a2e1a;
-      font-family: 'Press Start 2P', 'Courier New', monospace;
-      color: #fff8dc;
+      background: #05020d;
+      font-family: 'Segoe UI', Roboto, Orbitron, 'Courier New', monospace;
+      color: #e0f7ff;
     }
     #gameCanvas {
       display: block;
       width: 100vw;
       height: 100vh;
-      image-rendering: pixelated;
-      image-rendering: crisp-edges;
     }
     #ui-layer {
       position: fixed;
@@ -37,259 +32,250 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      padding: 16px 20px;
+      padding: 18px 24px;
     }
     .hud-top {
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
-      gap: 12px;
-      flex-wrap: wrap;
+      gap: 16px;
     }
-    /* Zelda 16-Bit Wooden & Gold RPG Frame */
-    .rpg-box {
-      background: #2b1d14;
-      border: 4px solid #f5c242;
-      box-shadow:
-        inset 0 0 0 3px #5c3a21,
-        0 6px 0 #140c07;
-      padding: 10px 14px;
+    .hud-box {
+      background: rgba(8, 10, 26, 0.72);
+      border: 1px solid rgba(0, 243, 255, 0.45);
+      box-shadow: 0 0 18px rgba(0, 243, 255, 0.18), inset 0 0 12px rgba(0, 243, 255, 0.08);
+      border-radius: 10px;
+      padding: 10px 16px;
+      backdrop-filter: blur(6px);
     }
     .hud-label {
-      font-size: 9px;
-      color: #ffd966;
-      margin-bottom: 6px;
-      letter-spacing: 1px;
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #79d8ff;
+      opacity: 0.85;
     }
     .hud-value {
-      font-size: 16px;
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: 1.5px;
       color: #ffffff;
-      text-shadow: 2px 2px 0 #140c07;
+      text-shadow: 0 0 10px #00f3ff;
     }
-    .hearts-bar {
+    .shield-bar {
       display: flex;
       gap: 6px;
-      margin-top: 4px;
+      margin-top: 6px;
     }
-    .heart-pip {
-      width: 20px;
-      height: 18px;
-      position: relative;
-      display: inline-block;
-      font-size: 18px;
-      line-height: 18px;
-      color: #4a3525;
-      text-shadow: 2px 2px 0 #140c07;
+    .shield-pip {
+      width: 22px;
+      height: 10px;
+      border-radius: 3px;
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(0, 243, 255, 0.35);
+      transition: all 0.2s ease;
     }
-    .heart-pip.active {
-      color: #ff2e4c;
+    .shield-pip.active {
+      background: #00f3ff;
+      box-shadow: 0 0 10px #00f3ff;
     }
     .sector-wrap {
       text-align: center;
-      min-width: 260px;
+      min-width: 240px;
     }
     .sector-progress-bg {
       width: 100%;
-      height: 12px;
-      background: #140c07;
-      border: 2px solid #f5c242;
-      margin-top: 6px;
-      padding: 1px;
+      height: 8px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 99px;
+      overflow: hidden;
+      margin-top: 8px;
+      border: 1px solid rgba(255, 0, 170, 0.4);
     }
     .sector-progress-fill {
       height: 100%;
       width: 0%;
-      background: #38d967;
+      background: linear-gradient(90deg, #00f3ff, #ff00aa);
+      box-shadow: 0 0 12px #ff00aa;
       transition: width 0.1s linear;
     }
     #boss-hud {
       display: none;
-      margin: 10px auto 0;
-      width: min(480px, 90vw);
+      margin: 8px auto 0;
+      width: min(460px, 86vw);
       text-align: center;
-      background: #3a1219;
-      border-color: #ff4d4d;
+      border-color: rgba(255, 42, 109, 0.75);
+      box-shadow: 0 0 24px rgba(255, 42, 109, 0.35);
     }
     .boss-hp-bg {
       width: 100%;
-      height: 14px;
-      background: #140c07;
-      border: 2px solid #ffd966;
+      height: 12px;
+      background: rgba(255, 255, 255, 0.12);
+      border-radius: 99px;
+      overflow: hidden;
       margin-top: 6px;
+      border: 1px solid #ff2a6d;
     }
     .boss-hp-fill {
       height: 100%;
       width: 100%;
-      background: #ff2e4c;
-      transition: width 0.18s steps(8);
+      background: linear-gradient(90deg, #ff2a6d, #ff9e00);
+      box-shadow: 0 0 14px #ff2a6d;
+      transition: width 0.18s ease;
     }
-
-    /* KANJI CHALLENGE STAMP OVERLAY */
-    #kanji-burst {
-      position: fixed;
-      top: 42%;
-      left: 50%;
-      transform: translate(-50%, -50%) scale(0.4);
-      pointer-events: none;
-      text-align: center;
-      opacity: 0;
-      z-index: 8;
-      transition: transform 0.25s cubic-bezier(0.18, 0.89, 0.32, 1.28), opacity 0.25s ease;
-    }
-    #kanji-burst.show {
-      opacity: 1;
-      transform: translate(-50%, -50%) scale(1);
-    }
-    .kanji-char {
-      font-family: 'Yuji Syuku', serif;
-      font-size: clamp(78px, 15vw, 136px);
-      font-weight: 900;
-      color: #ffdf4d;
-      line-height: 1;
-      text-shadow:
-        4px 4px 0 #b81d24,
-        -3px -3px 0 #140c07,
-        3px -3px 0 #140c07,
-        -3px 3px 0 #140c07,
-        0 8px 0 #140c07;
-      letter-spacing: 6px;
-    }
-    .kanji-sub {
-      display: inline-block;
-      margin-top: 8px;
-      background: #b81d24;
-      color: #fff8dc;
-      border: 3px solid #ffdf4d;
-      padding: 6px 14px;
-      font-size: 11px;
-      box-shadow: 0 4px 0 #140c07;
-    }
-
-    /* OVERLAYS */
     .overlay {
       position: fixed;
       inset: 0;
-      background: rgba(16, 26, 16, 0.82);
+      background: radial-gradient(circle at center, rgba(16, 12, 42, 0.78), rgba(4, 2, 12, 0.92));
       display: flex;
       align-items: center;
       justify-content: center;
-      z-index: 12;
+      z-index: 10;
       pointer-events: auto;
-      padding: 16px;
+      padding: 20px;
     }
     .overlay.hidden {
       display: none;
     }
     .panel {
-      max-width: 580px;
+      max-width: 540px;
       width: 100%;
-      background: #2b1d14;
-      border: 4px solid #f5c242;
-      box-shadow:
-        inset 0 0 0 4px #5c3a21,
-        0 10px 0 #140c07;
-      padding: 26px 22px;
+      background: rgba(10, 12, 32, 0.92);
+      border: 1.5px solid rgba(0, 243, 255, 0.55);
+      box-shadow: 0 0 40px rgba(0, 243, 255, 0.22), 0 0 80px rgba(255, 0, 170, 0.14);
+      border-radius: 16px;
+      padding: 30px 28px;
       text-align: center;
     }
     .title-sub {
-      font-size: 10px;
-      color: #5ce679;
-      margin-bottom: 10px;
-      text-shadow: 2px 2px 0 #140c07;
+      font-size: 12px;
+      letter-spacing: 4px;
+      color: #ff00aa;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+      font-weight: 700;
     }
     h1 {
-      font-size: clamp(20px, 4vw, 30px);
-      line-height: 1.35;
-      color: #ffdf4d;
-      text-shadow: 3px 3px 0 #b81d24, 5px 5px 0 #140c07;
-      margin-bottom: 14px;
+      font-size: clamp(28px, 5vw, 42px);
+      font-weight: 900;
+      letter-spacing: 2px;
+      background: linear-gradient(90deg, #00f3ff, #ffffff, #ff00aa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 10px;
     }
     .desc {
-      font-size: 10px;
-      line-height: 1.7;
-      color: #f4e8c1;
-      margin-bottom: 18px;
+      font-size: 14px;
+      line-height: 1.55;
+      color: #b8d8eb;
+      margin-bottom: 20px;
     }
     .diff-group {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 10px;
-      margin-bottom: 18px;
+      margin-bottom: 22px;
     }
     .diff-btn {
-      background: #3d281b;
-      border: 3px solid #8c6239;
-      color: #f4e8c1;
-      padding: 10px 6px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1.5px solid rgba(0, 243, 255, 0.35);
+      color: #a9d6e5;
+      padding: 12px 8px;
+      border-radius: 10px;
       cursor: pointer;
+      transition: all 0.2s ease;
       font-family: inherit;
-      box-shadow: 0 4px 0 #140c07;
     }
     .diff-btn strong {
       display: block;
-      font-size: 11px;
-      margin-bottom: 6px;
-      color: #ffdf4d;
+      font-size: 15px;
+      letter-spacing: 1px;
+      margin-bottom: 3px;
+      color: #fff;
     }
     .diff-btn span {
-      font-size: 8px;
-      line-height: 1.4;
-      display: block;
+      font-size: 11px;
+      opacity: 0.8;
     }
     .diff-btn.selected, .diff-btn:hover {
-      border-color: #5ce679;
-      background: #234d2c;
+      border-color: #00f3ff;
+      background: rgba(0, 243, 255, 0.16);
+      box-shadow: 0 0 18px rgba(0, 243, 255, 0.35);
       transform: translateY(-2px);
     }
     .diff-btn[data-diff="HARD"].selected {
-      border-color: #ff4d4d;
-      background: #591c24;
+      border-color: #ff2a6d;
+      background: rgba(255, 42, 109, 0.2);
+      box-shadow: 0 0 18px rgba(255, 42, 109, 0.4);
     }
     .primary-btn {
       width: 100%;
-      padding: 14px 16px;
-      font-size: 13px;
-      border: 3px solid #fff8dc;
+      padding: 14px 20px;
+      font-size: 16px;
+      font-weight: 800;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      border: none;
+      border-radius: 10px;
       cursor: pointer;
-      color: #140c07;
-      background: #5ce679;
-      box-shadow: 0 5px 0 #1e6b34;
+      color: #05020d;
+      background: linear-gradient(90deg, #00f3ff, #5ce1e6);
+      box-shadow: 0 0 24px rgba(0, 243, 255, 0.55);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
       font-family: inherit;
     }
     .primary-btn:hover {
-      background: #7ef296;
-    }
-    .primary-btn:active {
-      transform: translateY(3px);
-      box-shadow: 0 2px 0 #1e6b34;
+      transform: scale(1.02);
+      box-shadow: 0 0 32px rgba(0, 243, 255, 0.85);
     }
     .controls-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 10px;
-      margin-top: 18px;
+      gap: 8px;
+      margin-top: 20px;
       text-align: left;
-      font-size: 8px;
-      line-height: 1.5;
-      color: #f4e8c1;
-      background: #1f140d;
-      padding: 12px;
-      border: 2px solid #5c3a21;
+      font-size: 12px;
+      color: #9ec5d8;
+      background: rgba(0, 0, 0, 0.35);
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
     }
     .key-tag {
       display: inline-block;
-      padding: 2px 5px;
-      background: #f5c242;
-      color: #140c07;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: rgba(0, 243, 255, 0.16);
+      border: 1px solid rgba(0, 243, 255, 0.45);
+      color: #fff;
+      font-weight: 700;
+      font-size: 11px;
       margin-right: 4px;
     }
     .stats-row {
       display: flex;
       justify-content: space-around;
-      margin: 16px 0 20px;
+      margin: 18px 0 22px;
       padding: 12px;
-      background: #1f140d;
-      border: 2px solid #5c3a21;
+      background: rgba(255, 255, 255, 0.04);
+      border-radius: 10px;
+    }
+    #banner-msg {
+      position: fixed;
+      top: 26%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: clamp(22px, 4vw, 38px);
+      font-weight: 900;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: #fff;
+      text-shadow: 0 0 16px #00f3ff, 0 0 32px #ff00aa;
+      opacity: 0;
+      transition: opacity 0.25s ease;
+      pointer-events: none;
+      text-align: center;
+      z-index: 6;
     }
   </style>
 </head>
@@ -299,26 +285,26 @@
   <div id="ui-layer">
     <div>
       <div class="hud-top">
-        <div class="rpg-box">
-          <div class="hud-label">LIFE HEARTS</div>
-          <div class="hearts-bar" id="shieldBar"></div>
+        <div class="hud-box">
+          <div class="hud-label">SHIELD INTEGRITY</div>
+          <div class="shield-bar" id="shieldBar"></div>
         </div>
 
-        <div class="rpg-box sector-wrap">
-          <div class="hud-label" id="sectorLabel">STAGE 1 // EMERALD MEADOW</div>
+        <div class="hud-box sector-wrap">
+          <div class="hud-label" id="sectorLabel">SECTOR 1 // NEON GRID</div>
           <div class="sector-progress-bg">
             <div class="sector-progress-fill" id="sectorFill"></div>
           </div>
         </div>
 
-        <div class="rpg-box" style="text-align: right;">
-          <div class="hud-label">RUPEES // BEST: <span id="bestScore">0</span></div>
+        <div class="hud-box" style="text-align: right;">
+          <div class="hud-label">SCORE // BEST: <span id="bestScore">0</span></div>
           <div class="hud-value" id="scoreVal">000000</div>
         </div>
       </div>
 
-      <div class="rpg-box" id="boss-hud">
-        <div class="hud-label" id="bossName" style="color: #ff8585;">GUARDIAN APPEARS — GRAB TRIFORCE ORBS!</div>
+      <div class="hud-box" id="boss-hud">
+        <div class="hud-label" id="bossName" style="color: #ff2a6d; font-weight: 800;">WARNING: WARDEN DETECTED — COLLECT ENERGY CORES!</div>
         <div class="boss-hp-bg">
           <div class="boss-hp-fill" id="bossHpFill"></div>
         </div>
@@ -326,41 +312,37 @@
     </div>
   </div>
 
-  <!-- JAPANESE KANJI STAMP EFFECT -->
-  <div id="kanji-burst">
-    <div class="kanji-char" id="kanjiChar">突破</div>
-    <div class="kanji-sub" id="kanjiSub">CHALLENGE CLEARED! +300</div>
-  </div>
+  <div id="banner-msg"></div>
 
   <!-- START OVERLAY -->
   <div class="overlay" id="startOverlay">
     <div class="panel">
-      <div class="title-sub">16-BIT PIXEL ADVENTURE</div>
-      <h1>HYRULE RUNNER:<br/>LEGENDS</h1>
-      <p class="desc">Berlari melintasi 5 dunia penuh warna, kumpulkan Rupee, lewati gerbang tantangan untuk memicu <strong>Segel Kanji</strong>, dan kalahkan penjaga kuil!</p>
+      <div class="title-sub">5 SECTORS // BOSS PROTOCOL</div>
+      <h1>CYBER-RUNNER:<br/>OVERDRIVE</h1>
+      <p class="desc">Tembus 5 sektor cybernetic, hindari penghalang plasma, dan serap <strong>Energy Core</strong> untuk menghancurkan sistem pertahanan Boss di akhir setiap sektor.</p>
 
       <div class="diff-group" id="diffGroup">
         <button class="diff-btn" data-diff="EASY">
-          <strong>HERO</strong>
-          <span>5 Hearts<br/>Santai</span>
+          <strong>EASY</strong>
+          <span>5 Shield • Santai</span>
         </button>
         <button class="diff-btn selected" data-diff="NORMAL">
-          <strong>KNIGHT</strong>
-          <span>3 Hearts<br/>Seimbang</span>
+          <strong>NORMAL</strong>
+          <span>3 Shield • Seimbang</span>
         </button>
         <button class="diff-btn" data-diff="HARD">
-          <strong>MASTER</strong>
-          <span>2 Hearts<br/>Ekstrem</span>
+          <strong>HARD</strong>
+          <span>2 Shield • Ekstrem</span>
         </button>
       </div>
 
-      <button class="primary-btn" id="startBtn">START QUEST</button>
+      <button class="primary-btn" id="startBtn">INITIATE RUN</button>
 
       <div class="controls-grid">
-        <div><span class="key-tag">A/D</span> Pindah Jalur</div>
-        <div><span class="key-tag">W/SPACE</span> Double Jump</div>
-        <div><span class="key-tag">S/▼</span> Roll Bawah Laser</div>
-        <div><span class="key-tag">P/ESC</span> Pause Game</div>
+        <div><span class="key-tag">A / D</span> / <span class="key-tag">◀ ▶</span> Pindah Jalur</div>
+        <div><span class="key-tag">W / ▲</span> / <span class="key-tag">SPACE</span> Double Jump</div>
+        <div><span class="key-tag">S / ▼</span> Slide Bawah Laser</div>
+        <div><span class="key-tag">P / ESC</span> Pause Sistem</div>
       </div>
     </div>
   </div>
@@ -368,34 +350,34 @@
   <!-- PAUSE OVERLAY -->
   <div class="overlay hidden" id="pauseOverlay">
     <div class="panel">
-      <div class="title-sub">QUEST PAUSED</div>
-      <h1>RESTING</h1>
-      <p class="desc">Tekan <strong>P</strong> atau tombol di bawah untuk melanjutkan petualangan.</p>
-      <button class="primary-btn" id="resumeBtn">RESUME QUEST</button>
+      <div class="title-sub">SYSTEM SUSPENDED</div>
+      <h1>PAUSED</h1>
+      <p class="desc">Tekan <strong>P</strong> atau tombol di bawah untuk melanjutkan lari.</p>
+      <button class="primary-btn" id="resumeBtn">RESUME RUN</button>
     </div>
   </div>
 
   <!-- END / VICTORY OVERLAY -->
   <div class="overlay hidden" id="endOverlay">
     <div class="panel">
-      <div class="title-sub" id="endSub">QUEST FAILED</div>
-      <h1 id="endTitle">GAME OVER</h1>
-      <p class="desc" id="endDesc">Semua hati telah habis sebelum mencapai kuil terakhir.</p>
+      <div class="title-sub" id="endSub">SYSTEM FAILURE</div>
+      <h1 id="endTitle">FLATLINED</h1>
+      <p class="desc" id="endDesc">Perisai energi hancur sebelum mencapai inti sistem.</p>
       <div class="stats-row">
         <div>
-          <div class="hud-label">RUPEES</div>
+          <div class="hud-label">FINAL SCORE</div>
           <div class="hud-value" id="finalScore">0</div>
         </div>
         <div>
-          <div class="hud-label">STAGE</div>
+          <div class="hud-label">SECTOR REACHED</div>
           <div class="hud-value" id="finalSector">1 / 5</div>
         </div>
         <div>
-          <div class="hud-label">BEST</div>
+          <div class="hud-label">HIGH SCORE</div>
           <div class="hud-value" id="finalBest">0</div>
         </div>
       </div>
-      <button class="primary-btn" id="restartBtn">PLAY AGAIN</button>
+      <button class="primary-btn" id="restartBtn">REBOOT SYSTEM</button>
     </div>
   </div>
 
@@ -403,23 +385,7 @@
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
 
-    // Offscreen low-res buffer for authentic chunky 16-bit pixel art
-    const PIXEL_SCALE = 3;
-    const pCanvas = document.createElement('canvas');
-    const pCtx = pCanvas.getContext('2d');
-
-    function resize() {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-      pCanvas.width = Math.max(240, Math.floor(canvas.width / PIXEL_SCALE));
-      pCanvas.height = Math.max(160, Math.floor(canvas.height / PIXEL_SCALE));
-      ctx.imageSmoothingEnabled = false;
-      pCtx.imageSmoothingEnabled = false;
-    }
-    window.addEventListener('resize', resize);
-    resize();
-
-    // 8-Bit / 16-Bit Chiptune Audio Synthesizer
+    // Audio Synthesizer (Web Audio API)
     const AudioSys = {
       ctx: null,
       init() {
@@ -428,7 +394,7 @@
         }
         if (this.ctx.state === 'suspended') this.ctx.resume();
       },
-      playTone(freq, endFreq, duration, type = 'square', vol = 0.09) {
+      playTone(freq, endFreq, duration, type = 'sawtooth', vol = 0.12) {
         if (!this.ctx) return;
         const now = this.ctx.currentTime;
         const osc = this.ctx.createOscillator();
@@ -444,125 +410,36 @@
         osc.stop(now + duration);
       },
       jump(doubleJump = false) {
-        this.playTone(doubleJump ? 392 : 262, doubleJump ? 784 : 523, 0.14, 'square', 0.09);
+        this.playTone(doubleJump ? 340 : 220, doubleJump ? 720 : 480, 0.16, 'triangle', 0.15);
       },
       lane() {
-        this.playTone(330, 440, 0.06, 'triangle', 0.08);
+        this.playTone(280, 410, 0.08, 'sine', 0.1);
       },
       slide() {
-        this.playTone(240, 110, 0.15, 'sawtooth', 0.08);
+        this.playTone(300, 95, 0.18, 'sawtooth', 0.1);
       },
-      rupee() {
-        this.playTone(987, 1318, 0.12, 'square', 0.09);
-      },
-      kanjiFanfare() {
-        // Zelda Secret / Challenge Cleared jingle
-        const notes = [392, 370, 311, 220, 207, 330, 415, 523];
-        notes.forEach((f, i) => {
-          setTimeout(() => this.playTone(f, f, 0.13, 'square', 0.1), i * 85);
-        });
+      core() {
+        this.playTone(520, 1040, 0.18, 'sine', 0.16);
       },
       bossHit() {
-        this.playTone(220, 55, 0.3, 'sawtooth', 0.16);
+        this.playTone(180, 45, 0.35, 'square', 0.22);
       },
       damage() {
-        this.playTone(165, 45, 0.25, 'sawtooth', 0.16);
+        this.playTone(140, 38, 0.3, 'sawtooth', 0.24);
       },
       victory() {
-        const notes = [523, 659, 784, 1046];
-        notes.forEach((f, i) => {
-          setTimeout(() => this.playTone(f, f * 1.05, 0.25, 'square', 0.12), i * 130);
+        [440, 554, 659, 880].forEach((f, i) => {
+          setTimeout(() => this.playTone(f, f * 1.15, 0.25, 'triangle', 0.15), i * 110);
         });
       }
     };
 
-    // Colorful Zelda-inspired Worlds
-    const STAGES = [
-      {
-        name: 'STAGE 1 // EMERALD MEADOW',
-        boss: 'FOREST DEKU GUARDIAN',
-        skyTop: '#2d9bf0',
-        skyBot: '#8ce0ff',
-        sunColor: '#fff066',
-        grassA: '#3cc754',
-        grassB: '#2ea844',
-        roadA: '#e8c488',
-        roadB: '#d4ab6a',
-        roadBorder: '#8c5828',
-        treeLeaf: '#1e8a38',
-        treeHighlight: '#5ce679',
-        bossHp: 3
-      },
-      {
-        name: 'STAGE 2 // SUNSET CANYON',
-        boss: 'GERUDO SAND GOLEM',
-        skyTop: '#ff6b4a',
-        skyBot: '#ffd166',
-        sunColor: '#fff8dc',
-        grassA: '#e69c4c',
-        grassB: '#cc8235',
-        roadA: '#f2d399',
-        roadB: '#deb878',
-        roadBorder: '#7a3b1e',
-        treeLeaf: '#2d936c',
-        treeHighlight: '#6ede8a',
-        bossHp: 4
-      },
-      {
-        name: 'STAGE 3 // ZORA LAGOON',
-        boss: 'OCTO LEVIATHAN',
-        skyTop: '#1b6ca8',
-        skyBot: '#72efdd',
-        sunColor: '#ffffff',
-        grassA: '#2ec4b6',
-        grassB: '#20a4f3',
-        roadA: '#f7ede2',
-        roadB: '#e3d5ca',
-        roadBorder: '#2b59c3',
-        treeLeaf: '#ff7b9c',
-        treeHighlight: '#ffb3c6',
-        bossHp: 5
-      },
-      {
-        name: 'STAGE 4 // ELDIN VOLCANO',
-        boss: 'MAGMA DINOLFOS',
-        skyTop: '#4a0e17',
-        skyBot: '#d9381e',
-        sunColor: '#ffbe0b',
-        grassA: '#4a3b3c',
-        grassB: '#36292a',
-        roadA: '#7a6868',
-        roadB: '#635353',
-        roadBorder: '#ff5400',
-        treeLeaf: '#ff6d00',
-        treeHighlight: '#ffbe0b',
-        bossHp: 6
-      },
-      {
-        name: 'STAGE 5 // SACRED SKY TEMPLE',
-        boss: 'SHADOW GANON CORE',
-        skyTop: '#3c1e70',
-        skyBot: '#b583e8',
-        sunColor: '#ffdf4d',
-        grassA: '#72efdd',
-        grassB: '#56cfe1',
-        roadA: '#fff8dc',
-        roadB: '#f3e5ab',
-        roadBorder: '#f5c242',
-        treeLeaf: '#ffdf4d',
-        treeHighlight: '#ffffff',
-        bossHp: 7
-      }
-    ];
-
-    // Japanese Kanji Stamps for Clearing Challenges
-    const KANJI_STAMPS = [
-      { char: '突破', label: 'TOPPA! CHALLENGE CLEARED!' },
-      { char: '見事', label: 'MIGOTO! SPLENDID DODGE!' },
-      { char: '神速', label: 'SHINSOKU! GODSPEED!' },
-      { char: '無双', label: 'MUSOU! UNRIVALED!' },
-      { char: '天晴', label: 'APPARE! BRILLIANT!' },
-      { char: '制覇', label: 'SEIHA! STAGE CONQUERED!' }
+    const SECTORS = [
+      { name: 'SECTOR 1 // NEON GRID', boss: 'GRID SENTINEL MK-I', primary: '#00f3ff', secondary: '#ff00aa', skyTop: '#050214', skyBot: '#190a38', bossHp: 3 },
+      { name: 'SECTOR 2 // VOLT CIRCUIT', boss: 'VOLT INTERCEPTOR', primary: '#ffe600', secondary: '#00f3ff', skyTop: '#080c18', skyBot: '#122938', bossHp: 4 },
+      { name: 'SECTOR 3 // BIO-CORE', boss: 'VENOM HYDRA UNIT', primary: '#00ff88', secondary: '#a855f7', skyTop: '#03120d', skyBot: '#0e2e24', bossHp: 5 },
+      { name: 'SECTOR 4 // CRIMSON FIREWALL', boss: 'CRIMSON OVERLORD', primary: '#ff2a6d', secondary: '#ff9e00', skyTop: '#16030a', skyBot: '#38091b', bossHp: 6 },
+      { name: 'SECTOR 5 // OVERDRIVE APEX', boss: 'OMEGA NEXUS CORE', primary: '#ffffff', secondary: '#00f3ff', skyTop: '#0b041c', skyBot: '#290d4a', bossHp: 7 }
     ];
 
     const DIFFICULTIES = {
@@ -572,16 +449,16 @@
     };
 
     let selectedDiff = 'NORMAL';
-    let bestScore = Number(localStorage.getItem('hyruleRunnerBest') || 0);
+    let bestScore = Number(localStorage.getItem('cyberRunnerBest') || 0);
     document.getElementById('bestScore').textContent = bestScore;
 
     const state = {
       running: false,
       paused: false,
       score: 0,
-      stageIndex: 0,
-      stageProgress: 0,
-      stageTarget: 1000,
+      sectorIndex: 0,
+      sectorProgress: 0,
+      sectorTarget: 1000,
       speed: 26,
       shield: 3,
       maxShield: 3,
@@ -592,84 +469,57 @@
       bossMaxHp: 3,
       bossAttackTimer: 0,
       bossCoreTimer: 0,
-      challengeWaveCount: 0,
+      bossLaserZ: null,
       player: {
-        lane: 1,
+        lane: 1, // 0, 1, 2
         visualLane: 1,
         y: 0,
         vy: 0,
         jumps: 0,
-        slideTimer: 0,
-        runCycle: 0
+        slideTimer: 0
       },
       entities: [],
       particles: [],
       lasers: [],
-      scenery: [],
-      clouds: [],
+      buildings: [],
       spawnTimer: 0,
       gridOffset: 0
     };
 
-    function initScenery() {
-      state.scenery = [];
-      for (let i = 0; i < 26; i++) {
-        state.scenery.push({
-          side: i % 2 === 0 ? -1 : 1,
-          z: (i / 26) * 120 + 4,
-          kind: i % 3 === 0 ? 'PILLAR' : 'TREE',
-          offset: 1.75 + (i % 4) * 0.35
-        });
-      }
-      state.clouds = [];
-      for (let i = 0; i < 6; i++) {
-        state.clouds.push({
-          x: Math.random() * pCanvas.width,
-          y: 12 + Math.random() * 45,
-          w: 36 + Math.random() * 34,
-          spd: 4 + Math.random() * 6
-        });
-      }
+    function resize() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
     }
+    window.addEventListener('resize', resize);
+    resize();
 
-    function triggerKanjiStamp(customChar, customLabel, bonusPoints = 300) {
-      const pick = KANJI_STAMPS[Math.floor(Math.random() * (KANJI_STAMPS.length - 1))];
-      const char = customChar || pick.char;
-      const label = customLabel || `${pick.label} +${bonusPoints}`;
-
-      state.score += bonusPoints;
-      AudioSys.kanjiFanfare();
-
-      const box = document.getElementById('kanji-burst');
-      document.getElementById('kanjiChar').textContent = char;
-      document.getElementById('kanjiSub').textContent = label;
-      box.classList.add('show');
-
-      // Spawn golden pixel sparkles across screen
+    function initBuildings() {
+      state.buildings = [];
       for (let i = 0; i < 28; i++) {
-        state.particles.push({
-          x: pCanvas.width * 0.5 + (Math.random() - 0.5) * 110,
-          y: pCanvas.height * 0.42 + (Math.random() - 0.5) * 60,
-          vx: (Math.random() - 0.5) * 5,
-          vy: (Math.random() - 0.5) * 5 - 1,
-          life: 1.2,
-          color: i % 2 === 0 ? '#ffdf4d' : '#ff4d4d'
+        state.buildings.push({
+          side: i % 2 === 0 ? -1 : 1,
+          z: (i / 28) * 120 + 5,
+          height: 90 + Math.random() * 190,
+          width: 35 + Math.random() * 45,
+          offset: 1.55 + Math.random() * 1.1
         });
       }
-
-      clearTimeout(box._t);
-      box._t = setTimeout(() => {
-        box.classList.remove('show');
-      }, 1550);
     }
 
-    function updateHeartsUI() {
+    function showBanner(text, duration = 1800) {
+      const el = document.getElementById('banner-msg');
+      el.textContent = text;
+      el.style.opacity = '1';
+      clearTimeout(el._t);
+      el._t = setTimeout(() => { el.style.opacity = '0'; }, duration);
+    }
+
+    function updateShieldUI() {
       const bar = document.getElementById('shieldBar');
       bar.innerHTML = '';
       for (let i = 0; i < state.maxShield; i++) {
-        const pip = document.createElement('span');
-        pip.className = 'heart-pip' + (i < state.shield ? ' active' : '');
-        pip.textContent = '♥';
+        const pip = document.createElement('div');
+        pip.className = 'shield-pip' + (i < state.shield ? ' active' : '');
         bar.appendChild(pip);
       }
     }
@@ -680,28 +530,27 @@
       state.running = true;
       state.paused = false;
       state.score = 0;
-      state.stageIndex = 0;
-      state.stageProgress = 0;
-      state.speed = 27 * cfg.speedMult;
+      state.sectorIndex = 0;
+      state.sectorProgress = 0;
+      state.speed = 28 * cfg.speedMult;
       state.maxShield = cfg.maxShield;
       state.shield = cfg.maxShield;
       state.invulnTimer = 0;
       state.shakeTimer = 0;
       state.bossActive = false;
-      state.challengeWaveCount = 0;
       state.entities = [];
       state.particles = [];
       state.lasers = [];
       state.spawnTimer = 0.8;
-      state.player = { lane: 1, visualLane: 1, y: 0, vy: 0, jumps: 0, slideTimer: 0, runCycle: 0 };
+      state.player = { lane: 1, visualLane: 1, y: 0, vy: 0, jumps: 0, slideTimer: 0 };
 
-      initScenery();
-      updateHeartsUI();
+      initBuildings();
+      updateShieldUI();
       document.getElementById('boss-hud').style.display = 'none';
       document.getElementById('startOverlay').classList.add('hidden');
       document.getElementById('endOverlay').classList.add('hidden');
       document.getElementById('pauseOverlay').classList.add('hidden');
-      triggerKanjiStamp('冒険', 'QUEST START // EMERALD MEADOW', 0);
+      showBanner(SECTORS[0].name);
     }
 
     function endGame(victory) {
@@ -709,22 +558,19 @@
       const finalPts = Math.floor(state.score);
       if (finalPts > bestScore) {
         bestScore = finalPts;
-        localStorage.setItem('hyruleRunnerBest', bestScore);
+        localStorage.setItem('cyberRunnerBest', bestScore);
         document.getElementById('bestScore').textContent = bestScore;
       }
-      document.getElementById('endSub').textContent = victory ? 'ALL 5 TEMPLES SAVED!' : 'HEARTS DEPLETED';
-      document.getElementById('endTitle').textContent = victory ? 'LEGENDARY HERO' : 'GAME OVER';
+      document.getElementById('endSub').textContent = victory ? 'ALL 5 SECTORS LIBERATED' : 'CRITICAL SHIELD BREACH';
+      document.getElementById('endTitle').textContent = victory ? 'OVERDRIVE COMPLETE' : 'FLATLINED';
       document.getElementById('endDesc').textContent = victory
-        ? 'Luar biasa! Kamu berhasil menaklukkan seluruh kuil dan mengalahkan Shadow Ganon Core.'
-        : 'Perjalananmu terhenti di tengah jalan. Siap bangkit kembali?';
+        ? 'Luar biasa! Kamu berhasil menghancurkan Omega Nexus Core dan menaklukkan seluruh sektor.'
+        : 'Sistem pertahanan gagal menahan hantaman plasma. Siap untuk percobaan ulang?';
       document.getElementById('finalScore').textContent = finalPts.toLocaleString();
-      document.getElementById('finalSector').textContent = `${Math.min(5, state.stageIndex + 1)} / 5`;
+      document.getElementById('finalSector').textContent = `${Math.min(5, state.sectorIndex + 1)} / 5`;
       document.getElementById('finalBest').textContent = bestScore.toLocaleString();
       document.getElementById('endOverlay').classList.remove('hidden');
-      if (victory) {
-        triggerKanjiStamp('天下無双', 'ULTIMATE VICTORY!', 1000);
-        AudioSys.victory();
-      }
+      if (victory) AudioSys.victory();
     }
 
     // Input Handling
@@ -749,7 +595,7 @@
         state.player.jumps++;
         state.player.slideTimer = 0;
         AudioSys.jump(state.player.jumps === 2);
-        spawnBurst(0, 0, '#ffdf4d', 8);
+        spawnBurst(0, 0, SECTORS[state.sectorIndex].primary, 10);
       }
     }
     function doSlide() {
@@ -788,9 +634,9 @@
       if (!state.running || state.paused) return;
       const dx = e.changedTouches[0].clientX - touchStartX;
       const dy = e.changedTouches[0].clientY - touchStartY;
-      if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 20) {
+      if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 25) {
         dx < 0 ? moveLeft() : moveRight();
-      } else if (Math.abs(dy) > 20) {
+      } else if (Math.abs(dy) > 25) {
         dy < 0 ? doJump() : doSlide();
       }
     }, { passive: true });
@@ -807,30 +653,30 @@
     document.getElementById('restartBtn').addEventListener('click', startGame);
     document.getElementById('resumeBtn').addEventListener('click', togglePause);
 
-    // 3D Projection on Low-Res Pixel Canvas
+    // 3D Projection Helper
     function project(laneOffset, heightOffset, z) {
-      const w = pCanvas.width;
-      const h = pCanvas.height;
-      const horizonY = Math.floor(h * 0.38);
+      const w = canvas.width;
+      const h = canvas.height;
+      const horizonY = h * 0.42;
       const fov = 14;
       const scale = fov / (fov + z);
-      const roadHalfBottom = Math.min(w * 0.42, 160);
-      const x = Math.round(w * 0.5 + laneOffset * (roadHalfBottom * 0.64) * scale);
-      const y = Math.round(horizonY + (h * 0.56) * scale - heightOffset * scale * 8);
+      const roadHalfBottom = Math.min(w * 0.42, 420);
+      const x = w * 0.5 + laneOffset * (roadHalfBottom * 0.62) * scale;
+      const y = horizonY + (h * 0.52) * scale - heightOffset * scale * 22;
       return { x, y, scale };
     }
 
-    function spawnBurst(x, y, color, count = 10) {
+    function spawnBurst(x, y, color, count = 14) {
       const pPos = project(state.player.visualLane - 1, state.player.y + 0.6, 2.2);
       const bx = x || pPos.x;
       const by = y || pPos.y;
       for (let i = 0; i < count; i++) {
         const ang = Math.random() * Math.PI * 2;
-        const spd = 1 + Math.random() * 2.6;
+        const spd = 2 + Math.random() * 6;
         state.particles.push({
           x: bx, y: by,
           vx: Math.cos(ang) * spd,
-          vy: Math.sin(ang) * spd - 0.8,
+          vy: Math.sin(ang) * spd - 1.5,
           life: 1,
           color
         });
@@ -839,51 +685,43 @@
 
     function spawnObstaclePattern() {
       const types = ['BARRIER', 'HIGH_LASER', 'SPIKE_WALL'];
-      const lanes = [0, 1, 2].sort(() => Math.random() - 0.5);
+      const lanes = [0, 1, 2];
+      // Shuffle lanes
+      lanes.sort(() => Math.random() - 0.5);
 
-      state.challengeWaveCount++;
-      const isChallengeGate = state.challengeWaveCount % 5 === 0;
-
-      const count = isChallengeGate ? 2 : (Math.random() < (0.35 + state.stageIndex * 0.1) ? 2 : 1);
-      const waveId = state.challengeWaveCount;
-
+      const count = Math.random() < (0.35 + state.sectorIndex * 0.1) ? 2 : 1;
       for (let i = 0; i < count; i++) {
         const type = types[Math.floor(Math.random() * types.length)];
         state.entities.push({
           kind: 'OBSTACLE',
           type,
           lane: lanes[i],
-          z: 105,
-          isChallengeGate,
-          waveId,
-          cleared: false
+          z: 105
         });
       }
 
-      // Spawn Colorful Zelda Rupees (Green, Blue, Red)
-      const rupeeColors = ['#38d967', '#38b6ff', '#ff4d6d'];
-      const rIdx = Math.min(2, Math.floor(Math.random() * (state.stageIndex + 1.5)));
-      const orbLane = lanes[count] !== undefined ? lanes[count] : Math.floor(Math.random() * 3);
-      state.entities.push({
-        kind: 'RUPEE',
-        color: rupeeColors[rIdx],
-        value: (rIdx + 1) * 100,
-        lane: orbLane,
-        z: 105
-      });
+      // Bonus Data Orb
+      if (Math.random() < 0.65) {
+        const orbLane = lanes[count] !== undefined ? lanes[count] : Math.floor(Math.random() * 3);
+        state.entities.push({
+          kind: 'ORB',
+          lane: orbLane,
+          z: 105
+        });
+      }
     }
 
     function triggerBoss() {
-      const stg = STAGES[state.stageIndex];
+      const sec = SECTORS[state.sectorIndex];
       state.bossActive = true;
-      state.bossMaxHp = stg.bossHp;
-      state.bossHp = stg.bossHp;
+      state.bossMaxHp = sec.bossHp;
+      state.bossHp = sec.bossHp;
       state.bossAttackTimer = 1.4;
       state.bossCoreTimer = 1.8;
       document.getElementById('boss-hud').style.display = 'block';
-      document.getElementById('bossName').textContent = `BOSS: ${stg.boss} — GRAB TRIFORCE ORBS!`;
+      document.getElementById('bossName').textContent = `BOSS: ${sec.boss} — GRAB ENERGY CORES!`;
       document.getElementById('bossHpFill').style.width = '100%';
-      triggerKanjiStamp('強敵', `BOSS APPEAR: ${stg.boss}`, 0);
+      showBanner(`BOSS ALERT: ${sec.boss}`, 2200);
     }
 
     function takeDamage() {
@@ -892,40 +730,31 @@
       state.invulnTimer = 1.35;
       state.shakeTimer = 0.35;
       AudioSys.damage();
-      updateHeartsUI();
-      spawnBurst(0, 0, '#ff2e4c', 16);
+      updateShieldUI();
+      spawnBurst(0, 0, '#ff2a6d', 22);
       if (state.shield <= 0) {
         endGame(false);
       }
     }
 
-    const clearedWaves = new Set();
-
     function update(dt) {
       if (!state.running || state.paused) return;
 
       const cfg = DIFFICULTIES[selectedDiff];
-      const stg = STAGES[state.stageIndex];
-      const currentSpeed = state.speed + state.stageIndex * 3.5;
+      const sec = SECTORS[state.sectorIndex];
+      const currentSpeed = state.speed + state.sectorIndex * 3.8;
 
       state.gridOffset = (state.gridOffset + currentSpeed * dt) % 10;
-      state.score += currentSpeed * dt * 10 * cfg.scoreMult;
+      state.score += currentSpeed * dt * 12 * cfg.scoreMult;
       document.getElementById('scoreVal').textContent = String(Math.floor(state.score)).padStart(6, '0');
-      document.getElementById('sectorLabel').textContent = stg.name;
+      document.getElementById('sectorLabel').textContent = sec.name;
 
       if (state.invulnTimer > 0) state.invulnTimer -= dt;
       if (state.shakeTimer > 0) state.shakeTimer -= dt;
 
-      // Clouds drift
-      state.clouds.forEach(c => {
-        c.x += c.spd * dt;
-        if (c.x > pCanvas.width + 20) c.x = -c.w - 10;
-      });
-
       // Player Physics
       const p = state.player;
       p.visualLane += (p.lane - p.visualLane) * Math.min(1, dt * 16);
-      p.runCycle += dt * 14;
       if (p.y > 0 || p.vy !== 0) {
         p.y += p.vy * dt;
         p.vy -= 42 * dt;
@@ -937,22 +766,23 @@
       }
       if (p.slideTimer > 0) p.slideTimer -= dt;
 
-      // Stage Progression or Boss Fight
+      // Sector Progression or Boss Fight
       if (!state.bossActive) {
-        state.stageProgress += currentSpeed * dt * 2.1;
-        const pct = Math.min(100, (state.stageProgress / state.stageTarget) * 100);
+        state.sectorProgress += currentSpeed * dt * 2.1;
+        const pct = Math.min(100, (state.sectorProgress / state.sectorTarget) * 100);
         document.getElementById('sectorFill').style.width = `${pct}%`;
 
         state.spawnTimer -= dt;
         if (state.spawnTimer <= 0) {
           spawnObstaclePattern();
-          state.spawnTimer = Math.max(0.48, cfg.spawnRate - state.stageIndex * 0.06);
+          state.spawnTimer = Math.max(0.46, cfg.spawnRate - state.sectorIndex * 0.06);
         }
 
-        if (state.stageProgress >= state.stageTarget) {
+        if (state.sectorProgress >= state.sectorTarget) {
           triggerBoss();
         }
       } else {
+        // Boss attacks & Energy Core spawns
         state.bossAttackTimer -= dt;
         if (state.bossAttackTimer <= 0) {
           const attackLanes = [0, 1, 2].sort(() => Math.random() - 0.5);
@@ -962,7 +792,7 @@
             lane: attackLanes[0],
             z: 92
           });
-          if (state.stageIndex >= 2) {
+          if (state.sectorIndex >= 2) {
             state.entities.push({
               kind: 'OBSTACLE',
               type: 'SPIKE_WALL',
@@ -976,18 +806,21 @@
         state.bossCoreTimer -= dt;
         if (state.bossCoreTimer <= 0) {
           state.entities.push({
-            kind: 'TRIFORCE',
+            kind: 'CORE',
             lane: Math.floor(Math.random() * 3),
             z: 95
           });
-          state.bossCoreTimer = 2.4;
+          state.bossCoreTimer = 2.5;
         }
       }
 
-      // Scenery parallax
-      state.scenery.forEach(s => {
-        s.z -= currentSpeed * dt * 0.85;
-        if (s.z < 1) s.z += 120;
+      // Buildings parallax
+      state.buildings.forEach(b => {
+        b.z -= currentSpeed * dt * 0.85;
+        if (b.z < 1) {
+          b.z += 120;
+          b.height = 90 + Math.random() * 190;
+        }
       });
 
       // Entities update & Collision
@@ -995,25 +828,19 @@
         const ent = state.entities[i];
         ent.z -= currentSpeed * dt;
 
-        // Check if player successfully cleared a Challenge Gate wave without getting hit
-        if (ent.kind === 'OBSTACLE' && ent.isChallengeGate && ent.z < 1.0 && !ent.hit && !clearedWaves.has(ent.waveId)) {
-          clearedWaves.add(ent.waveId);
-          triggerKanjiStamp(null, null, 300);
-        }
-
         // Collision window around player Z (2.2)
         if (ent.z <= 2.9 && ent.z >= 1.2 && !ent.hit) {
           const sameLane = Math.abs(p.visualLane - ent.lane) < 0.44;
           if (sameLane) {
-            if (ent.kind === 'RUPEE') {
+            if (ent.kind === 'ORB') {
               ent.hit = true;
-              state.score += ent.value * cfg.scoreMult;
-              AudioSys.rupee();
-              spawnBurst(0, 0, ent.color, 8);
+              state.score += 150 * cfg.scoreMult;
+              AudioSys.core();
+              spawnBurst(0, 0, '#00f3ff', 10);
               state.entities.splice(i, 1);
               continue;
             }
-            if (ent.kind === 'TRIFORCE') {
+            if (ent.kind === 'CORE') {
               ent.hit = true;
               state.bossHp--;
               state.score += 500;
@@ -1021,7 +848,7 @@
               const pPos = project(p.visualLane - 1, p.y + 1, 2.2);
               const bPos = project(0, 3.6, 85);
               state.lasers.push({ x1: pPos.x, y1: pPos.y, x2: bPos.x, y2: bPos.y, life: 1 });
-              spawnBurst(bPos.x, bPos.y, '#ffdf4d', 18);
+              spawnBurst(bPos.x, bPos.y, '#ff9e00', 26);
 
               document.getElementById('bossHpFill').style.width = `${Math.max(0, (state.bossHp / state.bossMaxHp) * 100)}%`;
               state.entities.splice(i, 1);
@@ -1030,15 +857,15 @@
                 state.bossActive = false;
                 document.getElementById('boss-hud').style.display = 'none';
                 state.entities = [];
-                if (state.stageIndex >= STAGES.length - 1) {
+                if (state.sectorIndex >= SECTORS.length - 1) {
                   endGame(true);
                   return;
                 } else {
-                  state.stageIndex++;
-                  state.stageProgress = 0;
+                  state.sectorIndex++;
+                  state.sectorProgress = 0;
                   state.shield = Math.min(state.maxShield, state.shield + 1);
-                  updateHeartsUI();
-                  triggerKanjiStamp('制覇', `STAGE CLEARED! +1 HEART`, 500);
+                  updateShieldUI();
+                  showBanner(`SECTOR CLEARED! // ${SECTORS[state.sectorIndex].name}`, 2400);
                 }
               }
               continue;
@@ -1051,7 +878,6 @@
 
               if (collided) {
                 ent.hit = true;
-                if (ent.waveId) clearedWaves.add(ent.waveId);
                 takeDamage();
               }
             }
@@ -1068,327 +894,274 @@
         const pt = state.particles[i];
         pt.x += pt.vx;
         pt.y += pt.vy;
-        pt.vy += 0.08;
-        pt.life -= dt * 2.0;
+        pt.vy += 0.18;
+        pt.life -= dt * 2.2;
         if (pt.life <= 0) state.particles.splice(i, 1);
       }
 
-      // Sacred Beam Lasers
+      // Counter-attack Lasers
       for (let i = state.lasers.length - 1; i >= 0; i--) {
         state.lasers[i].life -= dt * 3;
         if (state.lasers[i].life <= 0) state.lasers.splice(i, 1);
       }
     }
 
-    function drawPixelTree(x, y, scale, stg) {
-      const s = Math.max(2, Math.round(14 * scale));
-      // Trunk
-      pCtx.fillStyle = '#6e4220';
-      pCtx.fillRect(x - Math.round(s * 0.25), y - Math.round(s * 0.8), Math.round(s * 0.5), Math.round(s * 0.8));
-      // Canopy (tiered Zelda pixel tree)
-      pCtx.fillStyle = '#14331c';
-      pCtx.fillRect(x - s - 1, y - Math.round(s * 2.1) - 1, s * 2 + 2, Math.round(s * 1.4) + 2);
-      pCtx.fillStyle = stg.treeLeaf;
-      pCtx.fillRect(x - s, y - Math.round(s * 2.1), s * 2, Math.round(s * 1.4));
-      pCtx.fillStyle = stg.treeHighlight;
-      pCtx.fillRect(x - Math.round(s * 0.75), y - Math.round(s * 2.0), Math.round(s * 1.5), Math.round(s * 0.55));
-    }
-
-    function drawPixelPillar(x, y, scale) {
-      const w = Math.max(4, Math.round(14 * scale));
-      const h = Math.max(8, Math.round(34 * scale));
-      pCtx.fillStyle = '#2c2b33';
-      pCtx.fillRect(x - w / 2 - 1, y - h - 1, w + 2, h + 2);
-      pCtx.fillStyle = '#9ea3b0';
-      pCtx.fillRect(x - w / 2, y - h, w, h);
-      pCtx.fillStyle = '#dce1eb';
-      pCtx.fillRect(x - w / 2, y - h, Math.max(2, Math.round(w * 0.35)), h);
-      // Gold rune trim
-      pCtx.fillStyle = '#f5c242';
-      pCtx.fillRect(x - w / 2, y - Math.round(h * 0.85), w, Math.max(1, Math.round(h * 0.1)));
-    }
-
     function draw() {
-      const w = pCanvas.width;
-      const h = pCanvas.height;
-      const stg = STAGES[state.stageIndex];
-      const horizonY = Math.floor(h * 0.38);
+      const w = canvas.width;
+      const h = canvas.height;
+      const sec = SECTORS[state.sectorIndex];
+      const horizonY = h * 0.42;
 
-      pCtx.save();
+      ctx.save();
       if (state.shakeTimer > 0) {
-        const mag = state.shakeTimer * 8;
-        pCtx.translate(Math.round((Math.random() - 0.5) * mag), Math.round((Math.random() - 0.5) * mag));
+        const mag = state.shakeTimer * 24;
+        ctx.translate((Math.random() - 0.5) * mag, (Math.random() - 0.5) * mag);
       }
 
-      // Stepped 16-bit Sky Bands
-      const skyBands = 6;
-      for (let i = 0; i < skyBands; i++) {
-        pCtx.fillStyle = i < 3 ? stg.skyTop : stg.skyBot;
-        if (i === 2) pCtx.fillStyle = stg.skyBot;
-        const bandH = Math.ceil(horizonY / skyBands);
-        pCtx.fillRect(0, i * bandH, w, bandH);
+      // Sky Gradient
+      const skyGrad = ctx.createLinearGradient(0, 0, 0, horizonY);
+      skyGrad.addColorStop(0, sec.skyTop);
+      skyGrad.addColorStop(1, sec.skyBot);
+      ctx.fillStyle = skyGrad;
+      ctx.fillRect(0, 0, w, horizonY);
+
+      // Synthwave Sun
+      const sunR = Math.min(w, h) * 0.15;
+      const sunGrad = ctx.createLinearGradient(0, horizonY - sunR * 1.6, 0, horizonY);
+      sunGrad.addColorStop(0, sec.primary);
+      sunGrad.addColorStop(1, sec.secondary);
+      ctx.fillStyle = sunGrad;
+      ctx.beginPath();
+      ctx.arc(w * 0.5, horizonY - sunR * 0.35, sunR, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Sun scanlines
+      ctx.fillStyle = sec.skyBot;
+      for (let i = 0; i < 6; i++) {
+        const ly = horizonY - sunR * 0.75 + i * (sunR * 0.16);
+        ctx.fillRect(w * 0.5 - sunR, ly, sunR * 2, 2 + i * 0.8);
       }
 
-      // Pixel Sun / Moon
-      const sunR = Math.round(Math.min(w, h) * 0.12);
-      const sunX = Math.round(w * 0.5);
-      const sunY = Math.round(horizonY - sunR * 0.65);
-      pCtx.fillStyle = stg.sunColor;
-      pCtx.fillRect(sunX - sunR, sunY - sunR, sunR * 2, sunR * 2);
-      pCtx.fillRect(sunX - sunR - 3, sunY - Math.round(sunR * 0.7), sunR * 2 + 6, Math.round(sunR * 1.4));
+      // Ground Base
+      ctx.fillStyle = '#060412';
+      ctx.fillRect(0, horizonY, w, h - horizonY);
 
-      // Fluffy Pixel Clouds
-      pCtx.fillStyle = '#ffffff';
-      state.clouds.forEach(c => {
-        const cx = Math.round(c.x), cy = Math.round(c.y), cw = Math.round(c.w);
-        pCtx.fillRect(cx, cy, cw, 6);
-        pCtx.fillRect(cx + 6, cy - 4, cw - 12, 5);
+      // Side Neon Buildings
+      state.buildings.slice().sort((a, b) => b.z - a.z).forEach(b => {
+        const p = project(b.side * b.offset, 0, b.z);
+        const bw = b.width * p.scale * 14;
+        const bh = b.height * p.scale * 7;
+        ctx.fillStyle = '#09071c';
+        ctx.strokeStyle = b.side < 0 ? sec.primary : sec.secondary;
+        ctx.lineWidth = Math.max(1, 2 * p.scale);
+        ctx.fillRect(p.x - bw / 2, p.y - bh, bw, bh);
+        ctx.strokeRect(p.x - bw / 2, p.y - bh, bw, bh);
       });
 
-      // Distant Pixel Mountains (Zelda Death Mountain silhouette)
-      pCtx.fillStyle = '#2d4a53';
-      for (let mx = -20; mx < w + 40; mx += 55) {
-        const mh = 22 + ((mx * 17) % 18);
-        pCtx.beginPath();
-        pCtx.moveTo(mx, horizonY);
-        pCtx.lineTo(mx + 28, horizonY - mh);
-        pCtx.lineTo(mx + 56, horizonY);
-        pCtx.closePath();
-        pCtx.fill();
-        // Snow/highlight peak
-        pCtx.fillStyle = '#dceef2';
-        pCtx.fillRect(mx + 24, horizonY - mh + 2, 8, 4);
-        pCtx.fillStyle = '#2d4a53';
-      }
-
-      // Lush 16-bit Grass Field Base
-      pCtx.fillStyle = stg.grassA;
-      pCtx.fillRect(0, horizonY, w, h - horizonY);
-
-      // Alternating Grass Stripes for Speed Sense
-      for (let z = 10 - state.gridOffset; z < 110; z += 10) {
-        const l1 = project(-6, 0, z);
-        const l2 = project(-6, 0, Math.max(0, z - 5));
-        pCtx.fillStyle = stg.grassB;
-        pCtx.fillRect(0, l1.y, w, Math.max(1, l2.y - l1.y));
-      }
-
-      // Cobblestone / Dirt Path Trapezoid
+      // Highway Trapezoid
       const topL = project(-1.5, 0, 110);
       const topR = project(1.5, 0, 110);
       const botL = project(-1.5, 0, 0);
       const botR = project(1.5, 0, 0);
 
-      pCtx.fillStyle = stg.roadA;
-      pCtx.beginPath();
-      pCtx.moveTo(topL.x, topL.y);
-      pCtx.lineTo(topR.x, topR.y);
-      pCtx.lineTo(botR.x, botR.y);
-      pCtx.lineTo(botL.x, botL.y);
-      pCtx.closePath();
-      pCtx.fill();
+      const roadGrad = ctx.createLinearGradient(0, horizonY, 0, h);
+      roadGrad.addColorStop(0, 'rgba(18, 12, 42, 0.95)');
+      roadGrad.addColorStop(1, 'rgba(8, 6, 22, 0.98)');
+      ctx.fillStyle = roadGrad;
+      ctx.beginPath();
+      ctx.moveTo(topL.x, topL.y);
+      ctx.lineTo(topR.x, topR.y);
+      ctx.lineTo(botR.x, botR.y);
+      ctx.lineTo(botL.x, botL.y);
+      ctx.closePath();
+      ctx.fill();
 
-      // Path Tile Lines
-      pCtx.strokeStyle = stg.roadB;
-      pCtx.lineWidth = 1;
+      // Horizontal Grid Lines
+      ctx.strokeStyle = sec.primary;
+      ctx.lineWidth = 1.2;
       for (let z = 10 - state.gridOffset; z < 110; z += 10) {
         const l = project(-1.5, 0, z);
         const r = project(1.5, 0, z);
-        pCtx.beginPath();
-        pCtx.moveTo(l.x, l.y);
-        pCtx.lineTo(r.x, r.y);
-        pCtx.stroke();
+        ctx.globalAlpha = Math.max(0.08, 1 - z / 110) * 0.45;
+        ctx.beginPath();
+        ctx.moveTo(l.x, l.y);
+        ctx.lineTo(r.x, r.y);
+        ctx.stroke();
       }
+      ctx.globalAlpha = 1;
 
-      // Lane Dividers & Stone Borders
+      // Lane Dividers & Outer Rails
       [-1.5, -0.5, 0.5, 1.5].forEach((laneEdge, idx) => {
         const t = project(laneEdge, 0, 110);
         const b = project(laneEdge, 0, 0);
-        pCtx.strokeStyle = (idx === 0 || idx === 3) ? stg.roadBorder : stg.roadB;
-        pCtx.lineWidth = (idx === 0 || idx === 3) ? 2 : 1;
-        pCtx.beginPath();
-        pCtx.moveTo(t.x, t.y);
-        pCtx.lineTo(b.x, b.y);
-        pCtx.stroke();
+        ctx.strokeStyle = (idx === 0 || idx === 3) ? sec.secondary : 'rgba(255,255,255,0.22)';
+        ctx.lineWidth = (idx === 0 || idx === 3) ? 3 : 1.5;
+        ctx.beginPath();
+        ctx.moveTo(t.x, t.y);
+        ctx.lineTo(b.x, b.y);
+        ctx.stroke();
       });
 
-      // Side Trees & Temple Pillars
-      state.scenery.slice().sort((a, b) => b.z - a.z).forEach(s => {
-        const pos = project(s.side * s.offset, 0, s.z);
-        if (s.kind === 'TREE') drawPixelTree(pos.x, pos.y, pos.scale, stg);
-        else drawPixelPillar(pos.x, pos.y, pos.scale);
-      });
-
-      // Boss Pixel Sprite at Horizon
+      // Boss Hologram Ship at Horizon
       if (state.bossActive) {
         const bPos = project(0, 3.6, 85);
-        const bw = Math.max(24, Math.round(96 * bPos.scale));
-        const bh = Math.max(16, Math.round(46 * bPos.scale));
-        const hover = Math.round(Math.sin(performance.now() * 0.005) * 3);
-        const bx = bPos.x;
-        const by = bPos.y + hover;
+        const bw = 220 * bPos.scale * 4.5;
+        const bh = 85 * bPos.scale * 4.5;
+        const hover = Math.sin(performance.now() * 0.005) * 8;
 
-        // Dark outline
-        pCtx.fillStyle = '#140c07';
-        pCtx.fillRect(bx - bw / 2 - 2, by - bh / 2 - 2, bw + 4, bh + 4);
-        // Armor body
-        pCtx.fillStyle = '#5c1a28';
-        pCtx.fillRect(bx - bw / 2, by - bh / 2, bw, bh);
-        // Gold horns
-        pCtx.fillStyle = '#ffdf4d';
-        pCtx.fillRect(bx - bw * 0.45, by - bh * 0.75, Math.max(3, bw * 0.14), bh * 0.35);
-        pCtx.fillRect(bx + bw * 0.31, by - bh * 0.75, Math.max(3, bw * 0.14), bh * 0.35);
-        // Glowing Cyclops Eye
-        pCtx.fillStyle = '#ff2e4c';
-        pCtx.fillRect(bx - bw * 0.14, by - bh * 0.15, Math.max(4, bw * 0.28), Math.max(4, bh * 0.3));
-        pCtx.fillStyle = '#ffffff';
-        pCtx.fillRect(bx - bw * 0.06, by - bh * 0.08, Math.max(2, bw * 0.12), Math.max(2, bh * 0.14));
+        ctx.save();
+        ctx.translate(bPos.x, bPos.y + hover);
+        ctx.shadowBlur = 24;
+        ctx.shadowColor = '#ff2a6d';
+        ctx.fillStyle = '#1a0614';
+        ctx.strokeStyle = '#ff2a6d';
+        ctx.lineWidth = 3;
+
+        ctx.beginPath();
+        ctx.moveTo(0, -bh * 0.6);
+        ctx.lineTo(bw * 0.55, 0);
+        ctx.lineTo(bw * 0.35, bh * 0.45);
+        ctx.lineTo(-bw * 0.35, bh * 0.45);
+        ctx.lineTo(-bw * 0.55, 0);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+
+        // Boss Eye Core
+        ctx.fillStyle = '#ff9e00';
+        ctx.beginPath();
+        ctx.arc(0, 0, bh * 0.22, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
       }
 
-      // Entities (Sorted Far to Near)
+      // Draw Entities (Sorted Far to Near)
       state.entities.slice().sort((a, b) => b.z - a.z).forEach(ent => {
         const laneOff = ent.lane - 1;
-        const pos = project(laneOff, 0, ent.z);
-        const unit = Math.max(6, Math.round(30 * pos.scale));
+        const p = project(laneOff, 0, ent.z);
+        const unit = 84 * p.scale;
 
-        if (ent.kind === 'RUPEE') {
-          const floatY = pos.y - Math.round(unit * 0.65) + Math.round(Math.sin(performance.now() * 0.008 + ent.z) * 2);
-          const rw = Math.max(4, Math.round(unit * 0.32));
-          const rh = Math.max(6, Math.round(unit * 0.48));
-          // Pixel Diamond Rupee
-          pCtx.fillStyle = '#140c07';
-          pCtx.fillRect(pos.x - rw / 2 - 1, floatY - rh / 2 - 1, rw + 2, rh + 2);
-          pCtx.fillStyle = ent.color;
-          pCtx.fillRect(pos.x - rw / 2, floatY - rh / 2, rw, rh);
-          pCtx.fillStyle = '#ffffff';
-          pCtx.fillRect(pos.x - rw / 4, floatY - rh / 3, Math.max(1, rw / 3), Math.max(2, rh / 3));
-        } else if (ent.kind === 'TRIFORCE') {
-          const floatY = pos.y - Math.round(unit * 0.75) + Math.round(Math.sin(performance.now() * 0.01) * 3);
-          const ts = Math.max(8, Math.round(unit * 0.55));
-          // Golden Triforce Triangle
-          pCtx.fillStyle = '#ffdf4d';
-          pCtx.beginPath();
-          pCtx.moveTo(pos.x, floatY - ts / 2);
-          pCtx.lineTo(pos.x + ts / 2, floatY + ts / 2);
-          pCtx.lineTo(pos.x - ts / 2, floatY + ts / 2);
-          pCtx.closePath();
-          pCtx.fill();
-          pCtx.strokeStyle = '#140c07';
-          pCtx.lineWidth = 1;
-          pCtx.stroke();
+        if (ent.kind === 'ORB') {
+          const floatY = p.y - unit * 0.65 + Math.sin(performance.now() * 0.008 + ent.z) * 5;
+          ctx.save();
+          ctx.shadowBlur = 15;
+          ctx.shadowColor = '#00f3ff';
+          ctx.fillStyle = '#00f3ff';
+          ctx.beginPath();
+          ctx.arc(p.x, floatY, unit * 0.22, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
+        } else if (ent.kind === 'CORE') {
+          const floatY = p.y - unit * 0.75 + Math.sin(performance.now() * 0.01) * 7;
+          ctx.save();
+          ctx.shadowBlur = 22;
+          ctx.shadowColor = '#ff9e00';
+          ctx.fillStyle = '#ffbe0b';
+          ctx.strokeStyle = '#ffffff';
+          ctx.lineWidth = 2;
+          ctx.translate(p.x, floatY);
+          ctx.rotate(performance.now() * 0.004);
+          ctx.fillRect(-unit * 0.24, -unit * 0.24, unit * 0.48, unit * 0.48);
+          ctx.strokeRect(-unit * 0.24, -unit * 0.24, unit * 0.48, unit * 0.48);
+          ctx.restore();
         } else if (ent.kind === 'OBSTACLE') {
+          ctx.save();
           if (ent.type === 'BARRIER') {
-            // Wooden / Stone Zelda Block
-            const bw = Math.round(unit * 0.96);
-            const bh = Math.round(unit * 0.75);
-            pCtx.fillStyle = '#140c07';
-            pCtx.fillRect(pos.x - bw / 2 - 1, pos.y - bh - 1, bw + 2, bh + 2);
-            pCtx.fillStyle = ent.isChallengeGate ? '#d9381e' : '#8c5828';
-            pCtx.fillRect(pos.x - bw / 2, pos.y - bh, bw, bh);
-            pCtx.fillStyle = ent.isChallengeGate ? '#ffdf4d' : '#c4864b';
-            pCtx.fillRect(pos.x - bw / 2 + 2, pos.y - bh + 2, bw - 4, Math.max(2, Math.round(bh * 0.25)));
+            ctx.shadowBlur = 14;
+            ctx.shadowColor = '#ff2a6d';
+            ctx.fillStyle = 'rgba(255, 42, 109, 0.78)';
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 2;
+            ctx.fillRect(p.x - unit * 0.48, p.y - unit * 0.75, unit * 0.96, unit * 0.75);
+            ctx.strokeRect(p.x - unit * 0.48, p.y - unit * 0.75, unit * 0.96, unit * 0.75);
           } else if (ent.type === 'HIGH_LASER') {
-            // Floating Magic Fire/Beam Arch
-            const bw = Math.round(unit * 0.96);
-            const bh = Math.round(unit * 0.45);
-            const topY = pos.y - Math.round(unit * 1.42);
-            pCtx.fillStyle = '#4a3b3c';
-            pCtx.fillRect(pos.x - bw / 2 - 2, topY, 3, Math.round(unit * 1.42));
-            pCtx.fillRect(pos.x + bw / 2 - 1, topY, 3, Math.round(unit * 1.42));
-            pCtx.fillStyle = '#ff2e4c';
-            pCtx.fillRect(pos.x - bw / 2, topY + 2, bw, bh);
-            pCtx.fillStyle = '#ffdf4d';
-            pCtx.fillRect(pos.x - bw / 2, topY + Math.round(bh * 0.3), bw, Math.max(2, Math.round(bh * 0.4)));
+            // Side pylons + elevated beam
+            ctx.fillStyle = '#3a3a52';
+            ctx.fillRect(p.x - unit * 0.52, p.y - unit * 1.45, unit * 0.12, unit * 1.45);
+            ctx.fillRect(p.x + unit * 0.40, p.y - unit * 1.45, unit * 0.12, unit * 1.45);
+            ctx.shadowBlur = 16;
+            ctx.shadowColor = '#ff00aa';
+            ctx.fillStyle = '#ff00aa';
+            ctx.fillRect(p.x - unit * 0.48, p.y - unit * 1.38, unit * 0.96, unit * 0.45);
           } else if (ent.type === 'SPIKE_WALL') {
-            // Spiked Crystal / Thorn Cluster
-            const bw = Math.round(unit * 0.92);
-            const bh = Math.round(unit * 1.2);
-            pCtx.fillStyle = '#7b2cbf';
-            pCtx.beginPath();
-            pCtx.moveTo(pos.x - bw / 2, pos.y);
-            pCtx.lineTo(pos.x - bw / 4, pos.y - bh);
-            pCtx.lineTo(pos.x, pos.y - Math.round(bh * 0.55));
-            pCtx.lineTo(pos.x + bw / 4, pos.y - bh);
-            pCtx.lineTo(pos.x + bw / 2, pos.y);
-            pCtx.closePath();
-            pCtx.fill();
-            pCtx.strokeStyle = '#140c07';
-            pCtx.stroke();
+            ctx.shadowBlur = 16;
+            ctx.shadowColor = '#ff9e00';
+            ctx.fillStyle = 'rgba(255, 158, 0, 0.85)';
+            ctx.beginPath();
+            ctx.moveTo(p.x - unit * 0.48, p.y);
+            ctx.lineTo(p.x - unit * 0.24, p.y - unit * 1.25);
+            ctx.lineTo(p.x, p.y - unit * 0.65);
+            ctx.lineTo(p.x + unit * 0.24, p.y - unit * 1.25);
+            ctx.lineTo(p.x + unit * 0.48, p.y);
+            ctx.closePath();
+            ctx.fill();
           }
+          ctx.restore();
         }
       });
 
-      // Draw Hero Character (Link-Inspired Green Tunic & Cap Pixel Sprite)
+      // Draw Player Runner
       const p = state.player;
       const pBase = project(p.visualLane - 1, 0, 2.2);
       const pPos = project(p.visualLane - 1, p.y, 2.2);
-      const u = Math.max(10, Math.round(32 * pPos.scale));
+      const pUnit = 86 * pPos.scale;
       const isSliding = p.slideTimer > 0;
-      const bodyH = isSliding ? Math.round(u * 0.55) : Math.round(u * 1.25);
-      const bodyW = isSliding ? Math.round(u * 0.85) : Math.round(u * 0.62);
+      const bodyH = isSliding ? pUnit * 0.55 : pUnit * 1.25;
+      const bodyW = isSliding ? pUnit * 0.82 : pUnit * 0.58;
 
-      // Pixel Ground Shadow
-      pCtx.fillStyle = 'rgba(20, 12, 7, 0.45)';
-      pCtx.fillRect(pBase.x - Math.round(u * 0.38), pBase.y - 2, Math.round(u * 0.76), 4);
+      // Ground Shadow
+      ctx.fillStyle = 'rgba(0, 243, 255, 0.22)';
+      ctx.beginPath();
+      ctx.ellipse(pBase.x, pBase.y, pUnit * 0.42, pUnit * 0.14, 0, 0, Math.PI * 2);
+      ctx.fill();
 
       if (!(state.invulnTimer > 0 && Math.floor(state.invulnTimer * 16) % 2 === 0)) {
-        const px = pPos.x;
-        const py = pPos.y;
+        ctx.save();
+        ctx.shadowBlur = 20;
+        ctx.shadowColor = sec.primary;
 
-        // Dark Pixel Outline
-        pCtx.fillStyle = '#140c07';
-        pCtx.fillRect(px - bodyW / 2 - 1, py - bodyH - 1, bodyW + 2, bodyH + 2);
+        // Cyber Runner Body
+        const grad = ctx.createLinearGradient(0, pPos.y - bodyH, 0, pPos.y);
+        grad.addColorStop(0, '#ffffff');
+        grad.addColorStop(0.4, sec.primary);
+        grad.addColorStop(1, sec.secondary);
+        ctx.fillStyle = grad;
 
-        // Hero Tunic (Bright Emerald Green)
-        pCtx.fillStyle = '#2ec947';
-        pCtx.fillRect(px - bodyW / 2, py - bodyH, bodyW, bodyH);
+        ctx.beginPath();
+        ctx.roundRect(pPos.x - bodyW / 2, pPos.y - bodyH, bodyW, bodyH, 8);
+        ctx.fill();
 
-        // Golden Belt
-        pCtx.fillStyle = '#f5c242';
-        pCtx.fillRect(px - bodyW / 2, py - Math.round(bodyH * 0.35), bodyW, Math.max(2, Math.round(bodyH * 0.12)));
-
-        // Hero Cap / Hood
-        pCtx.fillStyle = '#1f9e34';
-        pCtx.fillRect(px - bodyW / 2, py - bodyH, bodyW, Math.max(4, Math.round(bodyH * 0.34)));
-
-        // Hylian Shield on Back (Blue & Gold)
-        const sw = Math.round(bodyW * 0.54);
-        const sh = Math.round(bodyH * 0.52);
-        pCtx.fillStyle = '#2563eb';
-        pCtx.fillRect(px - sw / 2, py - Math.round(bodyH * 0.72), sw, sh);
-        pCtx.strokeStyle = '#ffdf4d';
-        pCtx.lineWidth = 1;
-        pCtx.strokeRect(px - sw / 2, py - Math.round(bodyH * 0.72), sw, sh);
+        // Visor Trail
+        ctx.fillStyle = '#05020d';
+        ctx.fillRect(pPos.x - bodyW * 0.32, pPos.y - bodyH * 0.78, bodyW * 0.64, bodyH * 0.18);
+        ctx.restore();
       }
 
-      // Sacred Triforce Beam Lasers
+      // Boss Counter-attack Lasers
       state.lasers.forEach(l => {
-        pCtx.save();
-        pCtx.globalAlpha = l.life;
-        pCtx.strokeStyle = '#ffdf4d';
-        pCtx.lineWidth = Math.max(2, Math.round(4 * l.life));
-        pCtx.beginPath();
-        pCtx.moveTo(l.x1, l.y1);
-        pCtx.lineTo(l.x2, l.y2);
-        pCtx.stroke();
-        pCtx.restore();
+        ctx.save();
+        ctx.globalAlpha = l.life;
+        ctx.strokeStyle = '#00f3ff';
+        ctx.lineWidth = 8 * l.life;
+        ctx.shadowBlur = 20;
+        ctx.shadowColor = '#00f3ff';
+        ctx.beginPath();
+        ctx.moveTo(l.x1, l.y1);
+        ctx.lineTo(l.x2, l.y2);
+        ctx.stroke();
+        ctx.restore();
       });
 
-      // Chunky Pixel Particles
+      // Particles
       state.particles.forEach(pt => {
-        pCtx.save();
-        pCtx.globalAlpha = Math.min(1, pt.life);
-        pCtx.fillStyle = pt.color;
-        pCtx.fillRect(Math.round(pt.x - 1), Math.round(pt.y - 1), 3, 3);
-        pCtx.restore();
+        ctx.save();
+        ctx.globalAlpha = pt.life;
+        ctx.fillStyle = pt.color;
+        ctx.fillRect(pt.x - 3, pt.y - 3, 6, 6);
+        ctx.restore();
       });
 
-      pCtx.restore();
-
-      // Blit low-res pixel buffer onto full-screen canvas without smoothing
-      ctx.imageSmoothingEnabled = false;
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.drawImage(pCanvas, 0, 0, canvas.width, canvas.height);
+      ctx.restore();
     }
 
     let lastTime = performance.now();
@@ -1400,7 +1173,7 @@
       requestAnimationFrame(loop);
     }
 
-    initScenery();
+    initBuildings();
     requestAnimationFrame(loop);
   </script>
 </body>
