@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>KJPP TYCOON: JURU TAKSIR 16-BIT</title>
+  <title>KJPP TYCOON: JURU TAKSIR 2.5D ISOMETRIC</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
@@ -20,9 +20,9 @@
       width: 100%;
       height: 100%;
       overflow: hidden;
-      background: #182026;
+      background: #14181c;
       font-family: 'Press Start 2P', monospace;
-      color: #1c242b;
+      color: #3e3221;
     }
     #gameCanvas {
       display: block;
@@ -32,7 +32,7 @@
       image-rendering: crisp-edges;
     }
 
-    /* POKEMON GBA STYLE DIALOG & HUD */
+    /* SOFT RETRO RPG HUD */
     #hud-top {
       position: fixed;
       top: 10px;
@@ -46,93 +46,108 @@
       z-index: 5;
       flex-wrap: wrap;
     }
-    .pkmn-box {
-      background: #f8f8f0;
-      border: 3px solid #283038;
+    .ro-box {
+      background: #f7ede2;
+      border: 3px solid #7a5c43;
       box-shadow:
-        inset 0 0 0 3px #88a0b8,
-        0 4px 0 rgba(0, 0, 0, 0.45);
-      border-radius: 6px;
-      padding: 8px 10px;
+        inset 0 0 0 2px #fffbf0,
+        0 4px 0 rgba(0, 0, 0, 0.35);
+      border-radius: 8px;
+      padding: 8px 12px;
       pointer-events: auto;
     }
     .stat-row {
       display: flex;
       gap: 12px;
       align-items: center;
-      font-size: 9px;
+      font-size: 8px;
       line-height: 1.5;
     }
-    .money-txt { color: #1b7a3d; }
+    .money-txt { color: #2b7a42; font-weight: bold; }
     .rep-txt { color: #b86b00; }
     .loc-badge {
       display: inline-block;
-      background: #2b59c3;
+      background: #496da6;
       color: #ffffff;
-      padding: 3px 6px;
-      border-radius: 3px;
-      font-size: 8px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 7px;
       margin-bottom: 4px;
+      border: 1px solid #ffffff;
     }
     .quest-title {
-      font-size: 8px;
-      color: #b81d24;
-      margin-bottom: 4px;
+      font-size: 7px;
+      color: #a82e2e;
+      margin-bottom: 3px;
     }
     .quest-desc {
       font-size: 8px;
       line-height: 1.5;
-      color: #1c242b;
-      max-width: 340px;
+      color: #3c2f25;
+      max-width: 320px;
     }
     .top-actions {
       display: flex;
       gap: 6px;
     }
     .mini-btn {
-      background: #ffdf4d;
-      border: 3px solid #283038;
+      background: #ffd369;
+      border: 2px solid #5a3d28;
       border-radius: 5px;
-      padding: 7px 9px;
+      padding: 6px 8px;
       font-family: inherit;
-      font-size: 8px;
-      color: #1c242b;
+      font-size: 7px;
+      color: #3e2714;
       cursor: pointer;
-      box-shadow: 0 3px 0 #283038;
+      box-shadow: 0 3px 0 #5a3d28;
     }
     .mini-btn:active {
       transform: translateY(2px);
-      box-shadow: 0 1px 0 #283038;
+      box-shadow: 0 1px 0 #5a3d28;
     }
 
-    /* BOTTOM DIALOG BANNER */
+    /* STORY DIALOGUE BOX ala RO */
     #dialog-box {
       position: fixed;
       bottom: 14px;
       left: 50%;
       transform: translateX(-50%);
       width: min(640px, 94vw);
-      background: #f8f8f0;
-      border: 4px solid #283038;
-      box-shadow: inset 0 0 0 3px #d05848, 0 6px 0 rgba(0, 0, 0, 0.5);
-      border-radius: 8px;
-      padding: 12px 14px;
+      background: #f7ede2;
+      border: 4px solid #7a5c43;
+      box-shadow: inset 0 0 0 3px #eed7c5, 0 6px 0 rgba(0,0,0,0.4);
+      border-radius: 12px;
+      padding: 14px;
       z-index: 8;
       display: none;
     }
+    #dialog-inner {
+      display: flex;
+      gap: 14px;
+      align-items: center;
+    }
+    .portrait {
+      width: 48px;
+      height: 48px;
+      background: #ffd1a4;
+      border: 3px solid #7a5c43;
+      border-radius: 6px;
+      flex-shrink: 0;
+      image-rendering: pixelated;
+    }
     #dialog-text {
       font-size: 9px;
-      line-height: 1.65;
-      color: #1c242b;
+      line-height: 1.6;
+      color: #2b1f14;
     }
     #dialog-hint {
-      font-size: 7px;
-      color: #6b7280;
+      font-size: 6px;
+      color: #7f6e5e;
       text-align: right;
-      margin-top: 6px;
+      margin-top: 4px;
     }
 
-    /* MOBILE TOUCH CONTROLS (GBA STYLE) */
+    /* MOBILE CONTROLS */
     #mobile-controls {
       position: fixed;
       bottom: 16px;
@@ -155,19 +170,19 @@
       position: absolute;
       width: 42px;
       height: 42px;
-      background: #2f3842;
-      border: 3px solid #14181c;
-      color: #f8f8f0;
+      background: #40514e;
+      border: 3px solid #1c2624;
+      color: #f7ede2;
       font-family: inherit;
       font-size: 12px;
       display: flex;
       align-items: center;
       justify-content: center;
       border-radius: 6px;
-      box-shadow: 0 3px 0 #14181c;
+      box-shadow: 0 3px 0 #1c2624;
     }
     .dpad-btn:active, .dpad-btn.pressed {
-      background: #526170;
+      background: #708a81;
       transform: translateY(2px);
     }
     #btn-up { top: 0; left: 42px; }
@@ -186,33 +201,28 @@
       width: 56px;
       height: 56px;
       border-radius: 50%;
-      border: 3px solid #14181c;
+      border: 3px solid #2b1a0e;
       font-family: inherit;
-      font-size: 12px;
+      font-size: 11px;
       font-weight: bold;
       color: #ffffff;
-      box-shadow: 0 4px 0 #14181c;
+      box-shadow: 0 4px 0 #2b1a0e;
       display: flex;
       align-items: center;
       justify-content: center;
     }
     .ab-btn:active {
       transform: translateY(3px);
-      box-shadow: 0 1px 0 #14181c;
+      box-shadow: 0 1px 0 #2b1a0e;
     }
-    #btn-a { background: #d63031; }
-    #btn-b { background: #0984e3; width: 46px; height: 46px; font-size: 9px; }
+    #btn-a { background: #e056fd; }
+    #btn-b { background: #22a6b3; width: 46px; height: 46px; font-size: 8px; }
 
-    @media (min-width: 900px) and (pointer: fine) {
-      #mobile-controls { opacity: 0.45; }
-      #mobile-controls:hover { opacity: 0.9; }
-    }
-
-    /* MODAL OVERLAYS (START, UPGRADE SHOP, MINIGAME) */
+    /* OVERLAY MODAL */
     .overlay {
       position: fixed;
       inset: 0;
-      background: rgba(16, 22, 28, 0.84);
+      background: rgba(12, 16, 20, 0.82);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -224,66 +234,66 @@
       width: min(560px, 95vw);
       max-height: 88vh;
       overflow-y: auto;
-      background: #f8f8f0;
-      border: 4px solid #283038;
-      box-shadow: inset 0 0 0 4px #3b82f6, 0 8px 0 #0f1419;
-      border-radius: 8px;
+      background: #f7ede2;
+      border: 4px solid #7a5c43;
+      box-shadow: inset 0 0 0 4px #eed7c5, 0 8px 0 #0c0f12;
+      border-radius: 12px;
       padding: 20px 18px;
     }
     .modal-card h2 {
-      font-size: 14px;
-      color: #1e3a8a;
-      margin-bottom: 10px;
+      font-size: 11px;
+      color: #7a5c43;
+      margin-bottom: 12px;
       line-height: 1.4;
+      letter-spacing: 0.5px;
     }
     .modal-card p {
       font-size: 8px;
       line-height: 1.7;
-      color: #374151;
+      color: #3c2f25;
       margin-bottom: 14px;
     }
     .workflow-list {
-      background: #eef2f6;
-      border: 2px solid #94a3b8;
+      background: #fff8eb;
+      border: 2px solid #bba38a;
       padding: 10px;
       margin-bottom: 14px;
       font-size: 8px;
       line-height: 1.7;
-      text-align: left;
     }
     .primary-btn {
       width: 100%;
       padding: 12px;
-      background: #22c55e;
-      border: 3px solid #14532d;
+      background: #4bb543;
+      border: 3px solid #285420;
       color: #ffffff;
       font-family: inherit;
-      font-size: 10px;
+      font-size: 9px;
       cursor: pointer;
-      box-shadow: 0 4px 0 #14532d;
-      border-radius: 5px;
+      box-shadow: 0 4px 0 #285420;
+      border-radius: 6px;
     }
     .primary-btn:active {
       transform: translateY(2px);
-      box-shadow: 0 2px 0 #14532d;
+      box-shadow: 0 2px 0 #285420;
     }
     .shop-item {
       display: flex;
       justify-content: space-between;
       align-items: center;
       gap: 10px;
-      background: #ffffff;
-      border: 2px solid #cbd5e1;
+      background: #fffbf0;
+      border: 2px solid #bba38a;
       padding: 10px;
       margin-bottom: 8px;
-      border-radius: 5px;
+      border-radius: 6px;
     }
     .shop-info { text-align: left; }
-    .shop-info strong { display: block; font-size: 9px; color: #1e293b; margin-bottom: 4px; }
-    .shop-info span { display: block; font-size: 7px; color: #64748b; line-height: 1.4; }
+    .shop-info strong { display: block; font-size: 8px; color: #3e2714; margin-bottom: 3px; }
+    .shop-info span { display: block; font-size: 7px; color: #7f6e5e; line-height: 1.4; }
     .buy-btn {
-      background: #f59e0b;
-      border: 2px solid #78350f;
+      background: #f39c12;
+      border: 2px solid #8e44ad;
       color: #ffffff;
       padding: 8px 10px;
       font-family: inherit;
@@ -293,21 +303,21 @@
       border-radius: 4px;
     }
     .buy-btn:disabled {
-      background: #9ca3af;
-      border-color: #4b5563;
+      background: #95a5a6;
+      border-color: #34495e;
       cursor: not-allowed;
     }
     .close-btn {
       margin-top: 10px;
       width: 100%;
       padding: 10px;
-      background: #ef4444;
-      border: 3px solid #7f1d1d;
+      background: #e74c3c;
+      border: 3px solid #7f2216;
       color: #fff;
       font-family: inherit;
-      font-size: 9px;
+      font-size: 8px;
       cursor: pointer;
-      border-radius: 5px;
+      border-radius: 6px;
     }
   </style>
 </head>
@@ -316,7 +326,7 @@
 
   <!-- TOP HUD -->
   <div id="hud-top">
-    <div class="pkmn-box">
+    <div class="ro-box">
       <div class="loc-badge" id="locBadge">KANTOR KJPP</div>
       <div class="stat-row">
         <span class="money-txt">Rp <span id="moneyVal">500.000</span></span>
@@ -325,7 +335,7 @@
       </div>
     </div>
 
-    <div class="pkmn-box">
+    <div class="ro-box">
       <div class="quest-title" id="questStepTitle">TAHAP 1/8: CEK EMAIL ORDER</div>
       <div class="quest-desc" id="questDesc">Dekati PC Meja Kerja & tekan [A / SPASI] untuk buka Email masuk.</div>
     </div>
@@ -338,8 +348,13 @@
 
   <!-- BOTTOM POKEMON DIALOG -->
   <div id="dialog-box">
-    <div id="dialog-text">Selamat datang di KJPP!</div>
-    <div id="dialog-hint">[SPASI / TOMBOL A] Tutup</div>
+    <div id="dialog-inner">
+      <canvas id="portraitCanvas" class="portrait"></canvas>
+      <div style="flex-grow: 1;">
+        <div id="dialog-text">Selamat datang di KJPP!</div>
+        <div id="dialog-hint">[SPASI / TOMBOL A] Tutup</div>
+      </div>
+    </div>
   </div>
 
   <!-- MOBILE / TOUCH GBA CONTROLS -->
@@ -351,7 +366,7 @@
       <button class="dpad-btn" id="btn-right">▶</button>
     </div>
     <div class="action-btns">
-      <button class="ab-btn" id="btn-b">SHOP</button>
+      <button class="ab-btn" id="btn-b">UPGR</button>
       <button class="ab-btn" id="btn-a">A</button>
     </div>
   </div>
@@ -359,7 +374,7 @@
   <!-- START SCREEN -->
   <div class="overlay" id="startOverlay">
     <div class="modal-card">
-      <h2>KJPP TYCOON:<br/>JURU TAKSIR 16-BIT</h2>
+      <h2>KJPP TYCOON:<br/>JURU TAKSIR 2.5D</h2>
       <p>Bangun Kantor Jasa Penilai Publik dari staf pemula hingga menjadi firma penilai properti terbesar!</p>
       <div class="workflow-list">
         <strong>ALUR KERJA PENILAIAN (8 TAHAP):</strong><br/>
@@ -380,7 +395,7 @@
   <div class="overlay hidden" id="shopOverlay">
     <div class="modal-card">
       <h2>MANAJEMEN & UPGRADE KJPP</h2>
-      <p>Saldo Kas KJPP: <strong style="color:#1b7a3d;">Rp <span id="shopMoney">0</span></strong></p>
+      <p>Saldo Kas KJPP: <strong style="color:#2b7a42;">Rp <span id="shopMoney">0</span></strong></p>
       <div id="shopList"></div>
       <button class="close-btn" id="closeShopBtn">TUTUP MENU</button>
     </div>
@@ -390,7 +405,7 @@
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
 
-    // Low-res GBA Pixel Canvas (240x160 aspect scaled smoothly)
+    // 2.5D Isometric configuration
     const TILE = 16;
     const pCanvas = document.createElement('canvas');
     const pCtx = pCanvas.getContext('2d');
@@ -398,7 +413,7 @@
     function resize() {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
-      const scale = Math.max(2, Math.floor(Math.min(canvas.width / 256, canvas.height / 176)));
+      const scale = Math.max(2, Math.floor(Math.min(canvas.width / 260, canvas.height / 180)));
       pCanvas.width = Math.floor(canvas.width / scale);
       pCanvas.height = Math.floor(canvas.height / scale);
       ctx.imageSmoothingEnabled = false;
@@ -407,14 +422,14 @@
     window.addEventListener('resize', resize);
     resize();
 
-    // Retro GBA Chiptune Audio
+    // Sound FX Synthesis
     const AudioSys = {
       ctx: null,
       init() {
         if (!this.ctx) this.ctx = new (window.AudioContext || window.webkitAudioContext)();
         if (this.ctx.state === 'suspended') this.ctx.resume();
       },
-      beep(f1, f2, dur = 0.1, type = 'square', vol = 0.07) {
+      beep(f1, f2, dur = 0.1, type = 'sine', vol = 0.05) {
         if (!this.ctx) return;
         const t = this.ctx.currentTime;
         const osc = this.ctx.createOscillator();
@@ -429,18 +444,17 @@
         osc.start(t);
         osc.stop(t + dur);
       },
-      interact() { this.beep(523, 659, 0.09, 'square', 0.08); },
-      step() { this.beep(140, 110, 0.03, 'triangle', 0.03); },
-      door() { this.beep(260, 180, 0.14, 'sawtooth', 0.07); },
+      interact() { this.beep(440, 554, 0.08, 'sine', 0.06); },
+      step() { this.beep(120, 90, 0.03, 'triangle', 0.02); },
+      door() { this.beep(200, 140, 0.15, 'sawtooth', 0.05); },
       taskDone() {
-        [523, 659, 784].forEach((f, i) => setTimeout(() => this.beep(f, f, 0.1, 'square', 0.08), i * 75));
+        [523, 659, 784].forEach((f, i) => setTimeout(() => this.beep(f, f, 0.08, 'sine', 0.05), i * 70));
       },
       cash() {
-        [659, 880, 1046, 1318].forEach((f, i) => setTimeout(() => this.beep(f, f * 1.05, 0.12, 'square', 0.09), i * 80));
+        [587, 698, 880, 1174].forEach((f, i) => setTimeout(() => this.beep(f, f * 1.05, 0.12, 'sine', 0.06), i * 80));
       }
     };
 
-    // Order Pool
     const ORDERS = [
       { bank: 'BANK MANDIRI', asset: 'Rumah Tinggal 2 Lantai - Jl. Kaliurang', fee: 1500000 },
       { bank: 'BANK BCA', asset: 'Ruko 3 Lantai - Ringroad Utara', fee: 2400000 },
@@ -449,22 +463,12 @@
       { bank: 'BANK BNI', asset: 'Tanah & Bangunan Kos - Seturan', fee: 2100000 }
     ];
 
-    // Game State
     const state = {
       started: false,
       scene: 'OFFICE', // 'OFFICE' or 'CITY'
       money: 500000,
       reputation: 1,
       completedOrders: 0,
-      // Workflow Step:
-      // 0: Check Email (PC)
-      // 1: Print Proposal (PRINTER)
-      // 2: Send Email Proposal (PC)
-      // 3: Go Outside & Inspect Target Building (CITY - TARGET)
-      // 4: Collect 2 Market Comparables (CITY - COMP1 & COMP2)
-      // 5: Return to Office & Draft Report (PC)
-      // 6: Print & Bind Hardcopy Report (PRINTER)
-      // 7: Deliver Hardcopy to Bank (CITY - BANK)
       step: 0,
       currentOrder: ORDERS[0],
       compsCollected: { comp1: false, comp2: false },
@@ -472,58 +476,32 @@
       actionActive: false,
       actionLabel: '',
       dialogOpen: false,
-      dialogTimer: 0,
       upgrades: {
-        pcLevel: 1,      // Faster typing/email/report
-        printerLevel: 1, // Faster printing
-        shoesLevel: 1,   // Faster walking/motorbike
-        staffAdmin: 0,   // Passive income per second
-        staffSurveyor: 0 // Higher fee multiplier
+        pcLevel: 1,
+        printerLevel: 1,
+        shoesLevel: 1,
+        staffAdmin: 0,
+        staffSurveyor: 0
       },
       player: {
-        x: 6 * TILE,
-        y: 5 * TILE,
+        x: 4.5,
+        y: 4.5,
         dir: 'down',
         walkFrame: 0,
         stepSoundTimer: 0
-      },
-      npcs: []
+      }
     };
 
-    // Save / Load
-    function saveGame() {
-      const data = {
-        money: state.money,
-        reputation: state.reputation,
-        completedOrders: state.completedOrders,
-        step: state.step,
-        currentOrder: state.currentOrder,
-        compsCollected: state.compsCollected,
-        upgrades: state.upgrades
-      };
-      localStorage.setItem('kjppTycoonSave', JSON.stringify(data));
+    // Isometric coordinates mapper: (x, y) grid space -> 2.5D view space
+    function isoProj(gx, gy) {
+      const offsetX = pCanvas.width * 0.5;
+      const offsetY = pCanvas.height * 0.25;
+      const rx = (gx - gy) * (TILE * 1.15);
+      const ry = (gx + gy) * (TILE * 0.58);
+      return { x: Math.round(offsetX + rx), y: Math.round(offsetY + ry) };
     }
-    function loadGame() {
-      try {
-        const raw = localStorage.getItem('kjppTycoonSave');
-        if (!raw) return;
-        const d = JSON.parse(raw);
-        if (typeof d.money === 'number') state.money = d.money;
-        if (typeof d.reputation === 'number') state.reputation = d.reputation;
-        if (typeof d.completedOrders === 'number') state.completedOrders = d.completedOrders;
-        if (typeof d.step === 'number') state.step = d.step;
-        if (d.currentOrder) state.currentOrder = d.currentOrder;
-        if (d.compsCollected) state.compsCollected = d.compsCollected;
-        if (d.upgrades) Object.assign(state.upgrades, d.upgrades);
-      } catch (e) {}
-    }
-    loadGame();
 
-    // Maps Definition (Tile-based Pokemon GBA layout)
-    // Legend:
-    // # = Wall / Building, . = Floor / Grass, R = Road, W = Wood Floor, D = Door,
-    // P = PC Workstation, M = Printer Machine, S = Sofa/Bookshelf,
-    // T = Target House (Inspection), C = Comp House ("DIJUAL"), B = Bank Building
+    // World Map Data
     const OFFICE_MAP = [
       "##############",
       "#S...S..S...S#",
@@ -559,8 +537,10 @@
       return state.scene === 'OFFICE' ? OFFICE_MAP : CITY_MAP;
     }
 
-    function isSolid(tx, ty) {
+    function isSolid(gx, gy) {
       const map = getMap();
+      const tx = Math.floor(gx);
+      const ty = Math.floor(gy);
       if (ty < 0 || ty >= map.length || tx < 0 || tx >= map[0].length) return true;
       const ch = map[ty][tx];
       return ['#', 'P', 'M', 'S', 'T', 'C', 'O', 'B'].includes(ch);
@@ -572,6 +552,29 @@
       box.style.display = 'block';
       state.dialogOpen = true;
       AudioSys.interact();
+
+      // Render miniature custom character thumbnail portrait
+      const pCanvasThumb = document.getElementById('portraitCanvas');
+      pCanvasThumb.width = 48;
+      pCanvasThumb.height = 48;
+      const pCtxThumb = pCanvasThumb.getContext('2d');
+      pCtxThumb.imageSmoothingEnabled = false;
+      pCtxThumb.fillStyle = '#ffd1a4';
+      pCtxThumb.fillRect(0, 0, 48, 48);
+      // Sketchy Juru Taksir Chibi RO face
+      pCtxThumb.fillStyle = '#2b1a0e';
+      pCtxThumb.fillRect(14, 10, 20, 10); // Hair
+      pCtxThumb.fillStyle = '#fff';
+      pCtxThumb.fillRect(16, 20, 16, 14); // Face
+      pCtxThumb.fillStyle = '#4293f5';
+      pCtxThumb.fillRect(18, 23, 3, 3);   // Eyes Blue
+      pCtxThumb.fillRect(26, 23, 3, 3);
+      pCtxThumb.fillStyle = '#e74c3c';
+      pCtxThumb.fillRect(22, 29, 4, 1.5); // Smile
+      pCtxThumb.fillStyle = '#2b1b0f';
+      pCtxThumb.fillRect(12, 34, 24, 12); // Batik top
+      pCtxThumb.fillStyle = '#ffd169';
+      pCtxThumb.fillRect(18, 38, 2, 2);   // Details
     }
 
     function closeDialog() {
@@ -611,7 +614,6 @@
       document.getElementById('questDesc').textContent = stepDescs[state.step];
     }
 
-    // Start timed mini-task (e.g. measuring building, printing, drafting report)
     function startTask(label, durationSec, onComplete) {
       state.actionActive = true;
       state.actionProgress = 0;
@@ -620,7 +622,6 @@
       state.actionCallback = onComplete;
     }
 
-    // Check tile directly in front of player (or around player)
     function interact() {
       if (!state.started) return;
       if (state.dialogOpen) {
@@ -630,8 +631,8 @@
       if (state.actionActive) return;
 
       const p = state.player;
-      const cx = Math.floor((p.x + 8) / TILE);
-      const cy = Math.floor((p.y + 8) / TILE);
+      const cx = Math.floor(p.x);
+      const cy = Math.floor(p.y);
       const dirs = {
         up: [0, -1],
         down: [0, 1],
@@ -646,12 +647,12 @@
       const targetTile = (map[ty] && map[ty][tx]) ? map[ty][tx] : '.';
       const standTile = (map[cy] && map[cy][cx]) ? map[cy][cx] : '.';
 
-      // Door transitions
+      // Handle Map Pintu / Exit
       if (state.scene === 'OFFICE' && (targetTile === 'D' || standTile === 'D')) {
         AudioSys.door();
         state.scene = 'CITY';
-        p.x = 4 * TILE;
-        p.y = 9 * TILE;
+        p.x = 4.5;
+        p.y = 8.5;
         p.dir = 'down';
         updateHUD();
         showDialog('Kamu keluar dari Kantor KJPP menuju area kota & lokasi survey.');
@@ -660,15 +661,15 @@
       if (state.scene === 'CITY' && (targetTile === 'D' || standTile === 'D') && tx < 8) {
         AudioSys.door();
         state.scene = 'OFFICE';
-        p.x = 6 * TILE;
-        p.y = 8 * TILE;
+        p.x = 6.5;
+        p.y = 7.5;
         p.dir = 'up';
         updateHUD();
         showDialog('Kamu kembali masuk ke dalam Kantor KJPP.');
         return;
       }
 
-      // OFFICE INTERACTIONS
+      // Action Handlers
       if (state.scene === 'OFFICE') {
         if (targetTile === 'P') {
           if (state.step === 0) {
@@ -678,7 +679,6 @@
               state.step = 1;
               AudioSys.taskDone();
               updateHUD();
-              saveGame();
               showDialog(`EMAIL BARU dari ${state.currentOrder.bank}: Mohon penilaian aset "${state.currentOrder.asset}". Silakan cetak Surat Penawaran di Printer!`);
             });
           } else if (state.step === 2) {
@@ -688,7 +688,6 @@
               state.compsCollected = { comp1: false, comp2: false };
               AudioSys.taskDone();
               updateHUD();
-              saveGame();
               showDialog(`Email penawaran disetujui ${state.currentOrder.bank}! SPK terbit. Sekarang keluar kantor untuk survey & ukur bangunan target!`);
             });
           } else if (state.step === 5) {
@@ -697,7 +696,6 @@
               state.step = 6;
               AudioSys.taskDone();
               updateHUD();
-              saveGame();
               showDialog('Perhitungan Nilai Pasar & Nilai Likuidasi selesai! Segera cetak & jilid Laporan Penilaian di Mesin Printer.');
             });
           } else {
@@ -713,7 +711,6 @@
               state.step = 2;
               AudioSys.taskDone();
               updateHUD();
-              saveGame();
               showDialog('Surat Penawaran Jasa berhasil dicetak! Kembali ke PC Kerja untuk scan & kirim email ke Bank.');
             });
           } else if (state.step === 6) {
@@ -722,7 +719,6 @@
               state.step = 7;
               AudioSys.taskDone();
               updateHUD();
-              saveGame();
               showDialog(`Bundel Laporan Hardcopy telah dijilid rapi! Bawa ke Gedung ${state.currentOrder.bank} di luar kantor.`);
             });
           } else {
@@ -737,7 +733,6 @@
         }
       }
 
-      // CITY / FIELD INTERACTIONS
       if (state.scene === 'CITY') {
         if (targetTile === 'T') {
           if (state.step === 3) {
@@ -745,7 +740,6 @@
               state.step = 4;
               AudioSys.taskDone();
               updateHUD();
-              saveGame();
               showDialog('Inspeksi & pengukuran luas bangunan selesai! Selanjutnya cari 2 rumah bertanda "DIJUAL" di sekitar kota untuk data pembanding.');
             });
           } else if (state.step > 3) {
@@ -769,11 +763,9 @@
                 if (state.compsCollected.comp1 && state.compsCollected.comp2) {
                   state.step = 5;
                   updateHUD();
-                  saveGame();
                   showDialog('2 Data Pembanding Pasar lengkap! Sekarang pulang ke Kantor KJPP & buka PC untuk menyusun Laporan.');
                 } else {
                   updateHUD();
-                  saveGame();
                   showDialog('Data Pembanding 1 tercatat (Harga penawaran & luas tanah). Cari 1 data pembanding lagi!');
                 }
               });
@@ -796,7 +788,6 @@
               state.compsCollected = { comp1: false, comp2: false };
               AudioSys.cash();
               updateHUD();
-              saveGame();
               showDialog(`SUKSES! Laporan diterima oleh ${state.currentOrder.bank}. Fee Penilaian Rp ${earned.toLocaleString('id-ID')} masuk ke kas KJPP! Cek PC Kantor untuk order berikutnya.`);
             });
           } else {
@@ -807,7 +798,7 @@
       }
     }
 
-    // Input Handling (Keyboard + Touch)
+    // Keyboard bindings
     const keys = {};
     window.addEventListener('keydown', (e) => {
       keys[e.key.toLowerCase()] = true;
@@ -824,7 +815,7 @@
       keys[e.key.toLowerCase()] = false;
     });
 
-    // Touch D-Pad Binding
+    // Touch Support D-Pad
     function bindTouch(id, keyName) {
       const el = document.getElementById(id);
       const press = (e) => {
@@ -857,43 +848,13 @@
       openShop();
     });
 
-    // Shop System
+    // Upgrade Shop (RO Cozy Wooden styling)
     const SHOP_ITEMS = [
-      {
-        id: 'pcLevel',
-        name: 'PC Workstation & Excel Pro',
-        desc: 'Mempercepat proses email & penyusunan laporan di kantor.',
-        baseCost: 750000,
-        max: 5
-      },
-      {
-        id: 'printerLevel',
-        name: 'Printer Laser & Mesin Jilid',
-        desc: 'Mencetak surat penawaran & laporan tebal jauh lebih cepat.',
-        baseCost: 650000,
-        max: 5
-      },
-      {
-        id: 'shoesLevel',
-        name: 'Motor Operasional Lapangan',
-        desc: 'Meningkatkan kecepatan gerak di kantor dan saat survey kota.',
-        baseCost: 900000,
-        max: 4
-      },
-      {
-        id: 'staffAdmin',
-        name: 'Rekrut Admin KJPP',
-        desc: 'Menghasilkan pendapatan administrasi pasif tiap detik.',
-        baseCost: 1200000,
-        max: 5
-      },
-      {
-        id: 'staffSurveyor',
-        name: 'Rekrut Penilai Senior (MAPPI)',
-        desc: 'Meningkatkan nilai Fee Penilaian dari Bank sebesar +25% per level.',
-        baseCost: 1800000,
-        max: 5
-      }
+      { id: 'pcLevel', name: 'PC Workstation & Excel Pro', desc: 'Meningkatkan produktivitas kerja.', baseCost: 750000, max: 5 },
+      { id: 'printerLevel', name: 'Printer Laser High-Speed', desc: 'Mencetak dan membundel lebih cepat.', baseCost: 650000, max: 5 },
+      { id: 'shoesLevel', name: 'Motor Operasional Lapangan', desc: 'Bergerak lincah di kota.', baseCost: 900000, max: 4 },
+      { id: 'staffAdmin', name: 'Rekrut Admin Junior', desc: 'Pendapatan pasif yang berlipat.', baseCost: 1200000, max: 5 },
+      { id: 'staffSurveyor', name: 'Asisten Survey & Estimator', desc: 'Tiap tahap bonus Fee +25%.', baseCost: 1800000, max: 5 }
     ];
 
     function openShop() {
@@ -929,7 +890,6 @@
             state.upgrades[item.id]++;
             AudioSys.cash();
             updateHUD();
-            saveGame();
             renderShop();
           }
         });
@@ -956,13 +916,11 @@
     function update(dt) {
       if (!state.started) return;
 
-      // Passive income from Admin staff
       if (state.upgrades.staffAdmin > 0) {
-        state.money += state.upgrades.staffAdmin * 12000 * dt;
+        state.money += state.upgrades.staffAdmin * 150 * dt;
         document.getElementById('moneyVal').textContent = Math.floor(state.money).toLocaleString('id-ID');
       }
 
-      // Active Timed Task Progress
       if (state.actionActive) {
         state.actionProgress += dt / state.actionDuration;
         if (state.actionProgress >= 1) {
@@ -975,7 +933,6 @@
 
       if (state.dialogOpen || !document.getElementById('shopOverlay').classList.contains('hidden')) return;
 
-      // Movement
       let vx = 0, vy = 0;
       if (keys['w'] || keys['arrowup']) { vy = -1; state.player.dir = 'up'; }
       else if (keys['s'] || keys['arrowdown']) { vy = 1; state.player.dir = 'down'; }
@@ -983,239 +940,265 @@
       else if (keys['d'] || keys['arrowright']) { vx = 1; state.player.dir = 'right'; }
 
       if (vx !== 0 || vy !== 0) {
-        const moveSpd = (56 + (state.upgrades.shoesLevel - 1) * 16) * dt;
+        const moveSpd = (3.2 + (state.upgrades.shoesLevel - 1) * 0.8) * dt;
         const nx = state.player.x + vx * moveSpd;
         const ny = state.player.y + vy * moveSpd;
 
-        // Hitbox corners (smaller than 16x16 tile for smooth corner sliding)
-        const pad = 3;
-        const canX = !isSolid(Math.floor((nx + pad) / TILE), Math.floor((state.player.y + pad) / TILE)) &&
-                     !isSolid(Math.floor((nx + TILE - pad - 1) / TILE), Math.floor((state.player.y + pad) / TILE)) &&
-                     !isSolid(Math.floor((nx + pad) / TILE), Math.floor((state.player.y + TILE - pad - 1) / TILE)) &&
-                     !isSolid(Math.floor((nx + TILE - pad - 1) / TILE), Math.floor((state.player.y + TILE - pad - 1) / TILE));
+        if (!isSolid(nx, state.player.y)) state.player.x = nx;
+        if (!isSolid(state.player.x, ny)) state.player.y = ny;
 
-        if (canX) state.player.x = nx;
-
-        const canY = !isSolid(Math.floor((state.player.x + pad) / TILE), Math.floor((ny + pad) / TILE)) &&
-                     !isSolid(Math.floor((state.player.x + TILE - pad - 1) / TILE), Math.floor((ny + pad) / TILE)) &&
-                     !isSolid(Math.floor((state.player.x + pad) / TILE), Math.floor((ny + TILE - pad - 1) / TILE)) &&
-                     !isSolid(Math.floor((state.player.x + TILE - pad - 1) / TILE), Math.floor((ny + TILE - pad - 1) / TILE));
-
-        if (canY) state.player.y = ny;
-
-        state.player.walkFrame += dt * 10;
+        state.player.walkFrame += dt * 8;
         state.player.stepSoundTimer -= dt;
         if (state.player.stepSoundTimer <= 0) {
           AudioSys.step();
-          state.player.stepSoundTimer = 0.24;
+          state.player.stepSoundTimer = 0.28;
         }
       } else {
         state.player.walkFrame = 0;
       }
     }
 
-    // Pokemon GBA Style Tile & Character Renderer
-    function drawTile(ch, x, y) {
-      if (state.scene === 'OFFICE') {
-        // Warm wooden parquet floor
-        pCtx.fillStyle = ((x / TILE + y / TILE) % 2 === 0) ? '#e6c288' : '#deb678';
-        pCtx.fillRect(x, y, TILE, TILE);
-        pCtx.fillStyle = '#cfa363';
-        pCtx.fillRect(x, y + 15, TILE, 1);
+    // 2.5D Isometric Retro Art Renderer
+    function renderTile(ch, gx, gy) {
+      const screen = isoProj(gx, gy);
+      const isOff = state.scene === 'OFFICE';
 
-        if (ch === '#') {
-          pCtx.fillStyle = '#475569';
-          pCtx.fillRect(x, y, TILE, TILE);
-          pCtx.fillStyle = '#94a3b8';
-          pCtx.fillRect(x, y, TILE, 4);
-        } else if (ch === 'D') {
-          pCtx.fillStyle = '#3b82f6';
-          pCtx.fillRect(x + 1, y + 2, 14, 14);
-          pCtx.fillStyle = '#ffdf4d';
-          pCtx.fillRect(x + 5, y + 7, 6, 4);
-        } else if (ch === 'P') {
-          // Desk + Monitor
-          pCtx.fillStyle = '#854d27';
-          pCtx.fillRect(x + 1, y + 4, 14, 11);
-          pCtx.fillStyle = '#1e293b';
-          pCtx.fillRect(x + 3, y + 1, 10, 7);
-          pCtx.fillStyle = '#38bdf8';
-          pCtx.fillRect(x + 4, y + 2, 8, 5);
-        } else if (ch === 'M') {
-          // Office Laser Printer
-          pCtx.fillStyle = '#cbd5e1';
-          pCtx.fillRect(x + 2, y + 3, 12, 11);
-          pCtx.fillStyle = '#334155';
-          pCtx.fillRect(x + 4, y + 5, 8, 3);
-          pCtx.fillStyle = '#22c55e';
-          pCtx.fillRect(x + 11, y + 4, 2, 2);
-        } else if (ch === 'S') {
-          // Bookshelf / File Cabinet
-          pCtx.fillStyle = '#7c2d12';
-          pCtx.fillRect(x + 1, y + 1, 14, 14);
-          pCtx.fillStyle = '#ef4444';
-          pCtx.fillRect(x + 3, y + 3, 3, 4);
-          pCtx.fillStyle = '#3b82f6';
-          pCtx.fillRect(x + 7, y + 3, 3, 4);
-          pCtx.fillStyle = '#eab308';
-          pCtx.fillRect(x + 3, y + 9, 8, 4);
-        }
-      } else {
-        // CITY / OUTDOOR POKEMON GRASS & ASPHALT
-        if (ch === 'R') {
-          pCtx.fillStyle = '#4b5563';
-          pCtx.fillRect(x, y, TILE, TILE);
-          if ((x / TILE) % 2 === 0 && (y / TILE) === 4 || (y / TILE) === 10) {
-            pCtx.fillStyle = '#f8fafc';
-            pCtx.fillRect(x + 4, y + 15, 8, 1);
-          }
-        } else {
-          // Lush Pokemon Grass
-          pCtx.fillStyle = '#52c447';
-          pCtx.fillRect(x, y, TILE, TILE);
-          pCtx.fillStyle = '#3da334';
-          pCtx.fillRect(x + 3, y + 4, 2, 2);
-          pCtx.fillRect(x + 11, y + 11, 2, 2);
-        }
+      // Drop Shadows
+      pCtx.fillStyle = 'rgba(0, 0, 0, 0.12)';
+      pCtx.beginPath();
+      pCtx.ellipse(screen.x, screen.y + 4, TILE * 0.9, TILE * 0.45, 0, 0, Math.PI * 2);
+      pCtx.fill();
 
-        if (ch === '#') {
-          // Pokemon Tree border
-          pCtx.fillStyle = '#1b5e20';
-          pCtx.fillRect(x + 1, y + 1, 14, 13);
-          pCtx.fillStyle = '#2e7d32';
-          pCtx.fillRect(x + 2, y + 2, 12, 9);
-          pCtx.fillStyle = '#6d4c41';
-          pCtx.fillRect(x + 6, y + 12, 4, 4);
-        } else if (ch === 'O') {
-          // KJPP Office Exterior Building
-          pCtx.fillStyle = '#2563eb';
-          pCtx.fillRect(x, y, TILE, TILE);
-          pCtx.fillStyle = '#dbeafe';
-          pCtx.fillRect(x + 3, y + 4, 10, 8);
-        } else if (ch === 'T') {
-          // Target Appraisal House (Red Roof)
-          pCtx.fillStyle = '#dc2626';
-          pCtx.fillRect(x, y, TILE, TILE);
-          pCtx.fillStyle = '#fef3c7';
-          pCtx.fillRect(x + 2, y + 6, 12, 10);
-        } else if (ch === 'C') {
-          // Comparable Property ("DIJUAL" Yellow/Orange Roof)
-          pCtx.fillStyle = '#d97706';
-          pCtx.fillRect(x, y, TILE, TILE);
-          pCtx.fillStyle = '#fffbeb';
-          pCtx.fillRect(x + 3, y + 6, 10, 10);
-        } else if (ch === 'B') {
-          // Bank Client Building (Gold & Navy)
-          pCtx.fillStyle = '#1e3a8a';
-          pCtx.fillRect(x, y, TILE, TILE);
-          pCtx.fillStyle = '#fbbf24';
-          pCtx.fillRect(x + 2, y + 3, 12, 4);
-        } else if (ch === 'D') {
-          pCtx.fillStyle = '#111827';
-          pCtx.fillRect(x + 3, y + 3, 10, 13);
-        }
+      // Flat Ground base tiles (Zelda/RO soft parquet or grass)
+      pCtx.fillStyle = isOff ? '#f5e2cc' : '#88c070';
+      pCtx.beginPath();
+      pCtx.moveTo(screen.x, screen.y - TILE * 0.5);
+      pCtx.lineTo(screen.x + TILE, screen.y);
+      pCtx.lineTo(screen.x, screen.y + TILE * 0.5);
+      pCtx.lineTo(screen.x - TILE, screen.y);
+      pCtx.closePath();
+      pCtx.fill();
+
+      // Outer tile trims / lighting tints
+      pCtx.strokeStyle = isOff ? '#eed7c5' : '#a1cf82';
+      pCtx.lineWidth = 1;
+      pCtx.stroke();
+
+      // Architectural objects & props isometric
+      if (ch === '#') {
+        pCtx.fillStyle = isOff ? '#8c5a47' : '#2d6330';
+        pCtx.beginPath();
+        pCtx.moveTo(screen.x, screen.y - TILE * 1.5);
+        pCtx.lineTo(screen.x + TILE, screen.y - TILE);
+        pCtx.lineTo(screen.x + TILE, screen.y);
+        pCtx.lineTo(screen.x, screen.y + TILE * 0.5);
+        pCtx.lineTo(screen.x - TILE, screen.y);
+        pCtx.lineTo(screen.x - TILE, screen.y - TILE);
+        pCtx.closePath();
+        pCtx.fill();
+        // Top block highlights
+        pCtx.fillStyle = isOff ? '#b87c67' : '#418a45';
+        pCtx.beginPath();
+        pCtx.moveTo(screen.x, screen.y - TILE * 1.5);
+        pCtx.lineTo(screen.x + TILE, screen.y - TILE);
+        pCtx.lineTo(screen.x, screen.y - TILE * 0.5);
+        pCtx.lineTo(screen.x - TILE, screen.y - TILE);
+        pCtx.closePath();
+        pCtx.fill();
+      }
+      else if (ch === 'P') {
+        // Wooden desk with computer
+        pCtx.fillStyle = '#654321';
+        pCtx.fillRect(screen.x - 10, screen.y - 12, 20, 12);
+        pCtx.fillStyle = '#f1eedc';
+        pCtx.fillRect(screen.x - 7, screen.y - 20, 14, 10); // Monitor CRT
+        pCtx.fillStyle = '#38bdf8';
+        pCtx.fillRect(screen.x - 5, screen.y - 18, 10, 6);  // Cyan Screen
+      }
+      else if (ch === 'M') {
+        // Blue-rimmed Printing Machine
+        pCtx.fillStyle = '#a6b1e1';
+        pCtx.fillRect(screen.x - 8, screen.y - 14, 16, 14);
+        pCtx.fillStyle = '#424874';
+        pCtx.fillRect(screen.x - 5, screen.y - 6, 10, 5); // Drawer
+        pCtx.fillStyle = '#51e551';
+        pCtx.fillRect(screen.x + 3, screen.y - 11, 2, 2); // Blink LED
+      }
+      else if (ch === 'S') {
+        // Cozy Archive Bookshelf
+        pCtx.fillStyle = '#a87c53';
+        pCtx.fillRect(screen.x - 10, screen.y - 18, 20, 18);
+        pCtx.fillStyle = '#ff7b7b';
+        pCtx.fillRect(screen.x - 7, screen.y - 14, 5, 4);  // Red Folder
+        pCtx.fillStyle = '#7bf1ff';
+        pCtx.fillRect(screen.x, screen.y - 14, 4, 4);      // Blue Folder
+      }
+      else if (ch === 'T') {
+        // Landmark 2.5D Appraisal House Target (Red Rooftop)
+        pCtx.fillStyle = '#8e1111';
+        pCtx.beginPath();
+        pCtx.moveTo(screen.x, screen.y - TILE * 2.5);
+        pCtx.lineTo(screen.x + TILE * 1.5, screen.y - TILE);
+        pCtx.lineTo(screen.x, screen.y + TILE * 0.5);
+        pCtx.lineTo(screen.x - TILE * 1.5, screen.y - TILE);
+        pCtx.closePath();
+        pCtx.fill();
+        // Walls
+        pCtx.fillStyle = '#ffeed6';
+        pCtx.fillRect(screen.x - TILE * 1.3, screen.y - TILE * 0.6, TILE * 2.6, TILE * 1.2);
+        pCtx.fillStyle = '#ffdf4d';
+        pCtx.fillRect(screen.x - 4, screen.y + 2, 8, 10); // Doorway
+      }
+      else if (ch === 'C') {
+        // Comp Yellow-roofed House ("DIJUAL")
+        pCtx.fillStyle = '#d97706';
+        pCtx.beginPath();
+        pCtx.moveTo(screen.x, screen.y - TILE * 2.2);
+        pCtx.lineTo(screen.x + TILE * 1.2, screen.y - TILE);
+        pCtx.lineTo(screen.x, screen.y + TILE * 0.2);
+        pCtx.lineTo(screen.x - TILE * 1.2, screen.y - TILE);
+        pCtx.closePath();
+        pCtx.fill();
+        pCtx.fillStyle = '#fffbeb';
+        pCtx.fillRect(screen.x - TILE * 1.1, screen.y - TILE * 0.6, TILE * 2.2, TILE * 1.2);
+      }
+      else if (ch === 'B') {
+        // High-end Blue Bank Client Building
+        pCtx.fillStyle = '#1e3c72';
+        pCtx.beginPath();
+        pCtx.moveTo(screen.x, screen.y - TILE * 3);
+        pCtx.lineTo(screen.x + TILE * 2, screen.y - TILE * 1.5);
+        pCtx.lineTo(screen.x, screen.y + TILE * 0.5);
+        pCtx.lineTo(screen.x - TILE * 2, screen.y - TILE * 1.5);
+        pCtx.closePath();
+        pCtx.fill();
+        pCtx.fillStyle = '#ffd700';
+        pCtx.fillRect(screen.x - TILE * 1.5, screen.y - TILE, TILE * 3, TILE * 0.2); // Signage
+      }
+      else if (ch === 'R') {
+        // Shaded Ashphalt streets
+        pCtx.fillStyle = '#5c636a';
+        pCtx.beginPath();
+        pCtx.moveTo(screen.x, screen.y - TILE * 0.5);
+        pCtx.lineTo(screen.x + TILE, screen.y);
+        pCtx.lineTo(screen.x, screen.y + TILE * 0.5);
+        pCtx.lineTo(screen.x - TILE, screen.y);
+        pCtx.closePath();
+        pCtx.fill();
+      }
+      else if (ch === 'D') {
+        // Door marker (dark blue interior gateway)
+        pCtx.fillStyle = '#111317';
+        pCtx.fillRect(screen.x - 6, screen.y - 12, 12, 12);
+        pCtx.strokeStyle = '#ffd700';
+        pCtx.strokeRect(screen.x - 6, screen.y - 12, 12, 12);
       }
     }
 
-    function drawMarker(tx, ty, text, bgColor) {
-      const bounce = Math.round(Math.sin(performance.now() * 0.006) * 2);
-      const sx = tx * TILE + 8;
-      const sy = ty * TILE - 6 + bounce;
-      pCtx.font = '6px "Press Start 2P", monospace';
-      const w = Math.max(14, text.length * 6 + 6);
-      pCtx.fillStyle = '#1c242b';
-      pCtx.fillRect(sx - w / 2 - 1, sy - 8, w + 2, 11);
-      pCtx.fillStyle = bgColor;
-      pCtx.fillRect(sx - w / 2, sy - 7, w, 9);
+    function renderPlayer(px, py, dir, walkFrame, step) {
+      const pos = isoProj(px, py);
+      const bob = Math.abs(Math.sin(walkFrame)) > 0.5 ? -1 : 0;
+      const x = pos.x;
+      const y = pos.y + bob;
+
+      // Soft Circular drop shadow
+      pCtx.fillStyle = 'rgba(0, 0, 0, 0.2)';
+      pCtx.beginPath();
+      pCtx.ellipse(x, pos.y + 4, 7, 3.5, 0, 0, Math.PI * 2);
+      pCtx.fill();
+
+      // Outline
+      pCtx.fillStyle = '#3c2714';
+      pCtx.fillRect(x - 5, y - 17, 10, 18);
+
+      // Skin & Hair
+      pCtx.fillStyle = '#ffd1a4';
+      pCtx.fillRect(x - 4, y - 16, 8, 8);
+      pCtx.fillStyle = '#3e2714'; // Dark brown hair
+      pCtx.fillRect(x - 5, y - 17, 10, 4);
+
+      // Batik Outfit Style / Corporate
+      pCtx.fillStyle = '#a84c24'; // Pattern
+      pCtx.fillRect(x - 4, y - 9, 8, 6);
+      pCtx.fillStyle = '#ffd169'; // Ornament highlights
+      pCtx.fillRect(x - 2, y - 8, 4, 3);
+
+      // Navy Trousers
+      pCtx.fillStyle = '#1e293b';
+      pCtx.fillRect(x - 3, y - 3, 6, 4);
+
+      // Holding Assessment Document file (Steps final stage)
+      if (step === 7) {
+        pCtx.fillStyle = '#ffd369';
+        pCtx.fillRect(x + 3, y - 8, 3, 5);
+      }
+    }
+
+    function drawMarker(gx, gy, text, color) {
+      const p = isoProj(gx, gy);
+      const bob = Math.round(Math.sin(performance.now() * 0.005) * 2);
+      const sy = p.y - 16 + bob;
+
+      pCtx.font = '5px "Press Start 2P", monospace';
+      const w = text.length * 5 + 4;
+
+      pCtx.fillStyle = 'rgba(0,0,0,0.45)';
+      pCtx.fillRect(p.x - w / 2 - 1, sy - 6, w + 2, 8);
+      pCtx.fillStyle = color;
+      pCtx.fillRect(p.x - w / 2, sy - 5, w, 6);
+
       pCtx.fillStyle = '#ffffff';
       pCtx.textAlign = 'center';
-      pCtx.fillText(text, sx, sy);
+      pCtx.fillText(text, p.x, sy);
     }
 
-    function drawPlayer(px, py) {
-      const stepBob = Math.abs(Math.sin(state.player.walkFrame)) > 0.5 ? -1 : 0;
-      const x = Math.round(px);
-      const y = Math.round(py) + stepBob;
-
-      // Shadow
-      pCtx.fillStyle = 'rgba(0,0,0,0.3)';
-      pCtx.fillRect(x + 3, Math.round(py) + 13, 10, 3);
-
-      // Shoes / Slacks
-      pCtx.fillStyle = '#1e293b';
-      pCtx.fillRect(x + 4, y + 11, 3, 4);
-      pCtx.fillRect(x + 9, y + 11, 3, 4);
-
-      // Appraiser Formal Shirt & Tie
-      pCtx.fillStyle = '#ffffff';
-      pCtx.fillRect(x + 3, y + 6, 10, 6);
-      pCtx.fillStyle = '#dc2626';
-      pCtx.fillRect(x + 7, y + 7, 2, 4);
-
-      // Head & Hair
-      pCtx.fillStyle = '#fde68a';
-      pCtx.fillRect(x + 4, y + 1, 8, 6);
-      pCtx.fillStyle = '#1f2937';
-      pCtx.fillRect(x + 3, y, 10, 3);
-
-      // Carrying Hardcopy Folder in Step 7!
-      if (state.step === 7) {
-        pCtx.fillStyle = '#fbbf24';
-        pCtx.fillRect(x + 11, y + 7, 4, 5);
-      }
-    }
-
-    function draw() {
+    function render() {
       const map = getMap();
-      const mapW = map[0].length * TILE;
-      const mapH = map.length * TILE;
 
-      // Camera centered on player (Pokemon GBA camera)
-      const camX = Math.round(state.player.x + 8 - pCanvas.width / 2);
-      const camY = Math.round(state.player.y + 8 - pCanvas.height / 2);
-
-      pCtx.fillStyle = state.scene === 'OFFICE' ? '#1e293b' : '#2e7d32';
-      pCtx.fillRect(0, 0, pCanvas.width, pCanvas.height);
-
+      // Visual center positioning (camera focus follow)
+      const offset = isoProj(state.player.x, state.player.y);
       pCtx.save();
-      pCtx.translate(-camX, -camY);
+      pCtx.translate(pCanvas.width * 0.5 - offset.x, pCanvas.height * 0.38 - offset.y);
 
-      // Draw Map Tiles
+      // 2.5D Layer depth sorting
       for (let r = 0; r < map.length; r++) {
         for (let c = 0; c < map[r].length; c++) {
-          drawTile(map[r][c], c * TILE, r * TILE);
+          renderTile(map[r][c], c, r);
+
+          // Draw the player at the appropriate depth (r, c coordinates comparison)
+          if (Math.floor(state.player.y) === r && Math.floor(state.player.x) === c) {
+            renderPlayer(state.player.x, state.player.y, state.player.dir, state.player.walkFrame, state.step);
+          }
         }
       }
 
-      // Draw Objective Markers (Exclamation / Labels like Pokemon NPCs)
+      // Objective Markers
       if (state.scene === 'OFFICE') {
-        if (state.step === 0 || state.step === 2 || state.step === 5) drawMarker(3, 3, 'PC!', '#ef4444');
-        if (state.step === 1 || state.step === 6) drawMarker(9, 3, 'PRINT!', '#f59e0b');
-        if (state.step === 3 || state.step === 7) drawMarker(6, 9, 'KELUAR', '#22c55e');
+        if (state.step === 0 || state.step === 2 || state.step === 5) drawMarker(3, 3, 'PC!', '#e74c3c');
+        if (state.step === 1 || state.step === 6) drawMarker(9, 3, 'PRINT!', '#f19066');
+        if (state.step === 3 || state.step === 7) drawMarker(6.5, 8.5, 'KELUAR', '#496da6');
       } else {
-        drawMarker(3, 7, 'KJPP', '#2563eb');
-        drawMarker(4, 1, state.step === 3 ? 'UKUR!' : 'OBJEK', state.step === 3 ? '#ef4444' : '#64748b');
-        drawMarker(16, 1, state.step === 4 && !state.compsCollected.comp1 ? 'DIJUAL!' : 'DATA 1', '#d97706');
-        drawMarker(6, 12, state.step === 4 && !state.compsCollected.comp2 ? 'DIJUAL!' : 'DATA 2', '#d97706');
-        drawMarker(16, 7, state.step === 7 ? 'KIRIM!' : 'BANK', state.step === 7 ? '#22c55e' : '#1e3a8a');
+        drawMarker(4, 8.5, 'KANTOR', '#496da6');
+        drawMarker(4, 2.5, state.step === 3 ? 'SURVEY!' : 'RUMAH', state.step === 3 ? '#e74c3c' : '#7f8c8d');
+        drawMarker(15, 2.5, state.step === 4 && !state.compsCollected.comp1 ? 'DIJUAL!' : 'DATA A', '#f39c12');
+        drawMarker(5, 13.5, state.step === 4 && !state.compsCollected.comp2 ? 'DIJUAL!' : 'DATA B', '#f39c12');
+        drawMarker(16.5, 7.5, state.step === 7 ? 'BANK!' : 'BANK', state.step === 7 ? '#4bb543' : '#2b1f14');
       }
 
-      // Draw Player
-      drawPlayer(state.player.x, state.player.y);
-
-      // Draw Active Task Progress Bar over Player
+      // Active interactive action process gauge bar
       if (state.actionActive) {
-        const bx = Math.round(state.player.x + 8);
-        const by = Math.round(state.player.y - 10);
-        pCtx.fillStyle = '#1c242b';
-        pCtx.fillRect(bx - 22, by, 44, 7);
-        pCtx.fillStyle = '#22c55e';
-        pCtx.fillRect(bx - 21, by + 1, Math.round(42 * state.actionProgress), 5);
+        const playerPos = isoProj(state.player.x, state.player.y);
+        const bx = playerPos.x;
+        const by = playerPos.y - 24;
+        pCtx.fillStyle = '#1c1c1c';
+        pCtx.fillRect(bx - 18, by, 36, 6);
+        pCtx.fillStyle = '#ffd369';
+        pCtx.fillRect(bx - 17, by + 1, Math.round(34 * state.actionProgress), 4);
       }
 
       pCtx.restore();
 
-      // Blit to full screen
+      // Upscale frame buffer
       ctx.imageSmoothingEnabled = false;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       ctx.drawImage(pCanvas, 0, 0, canvas.width, canvas.height);
@@ -1226,7 +1209,7 @@
       const dt = Math.min(0.05, (now - last) / 1000);
       last = now;
       update(dt);
-      draw();
+      render();
       requestAnimationFrame(loop);
     }
 
